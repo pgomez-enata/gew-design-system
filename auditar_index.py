@@ -117,6 +117,22 @@ def main():
     for pat, por_que in RETIRADOS_CONTEXTO:
         for m in re.finditer(pat, txt):
             fallos.append(f'  FALLA  «{m.group(0)}» — {por_que}')
+
+    # ⭐ El término retirado se vigilaba SÓLO en el index, y se coló en la firma
+    # del reconocimiento y en el masthead de la revista: dos piezas que se
+    # imprimen. Ahora se barre todo el código y el contenido, que es de donde
+    # salen las piezas.
+    for otro in sorted(glob.glob(f"{RAIZ}/*.py")
+                       + glob.glob(f"{RAIZ}/contenido/*.json")):
+        if os.path.basename(otro) == "auditar_index.py":
+            continue          # este fichero habla de la regla, no la incumple
+        cont = open(otro, encoding="utf-8", errors="ignore").read()
+        for pat, por_que in RETIRADOS_CONTEXTO + [
+                (r"National Host(?!s)", "el papel de Enlata es Partner; "
+                 "«guía de National HostS» en plural sí se puede citar")]:
+            for m in re.finditer(pat, cont):
+                fallos.append(f"  FALLA  {os.path.basename(otro)}: "
+                              f"«{m.group(0)}» — {por_que}")
     for t, por_que in EXIGIDOS.items():
         if t not in txt:
             fallos.append(f'  FALLA  falta «{t}» — {por_que}')

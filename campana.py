@@ -2,7 +2,7 @@
 """
 Pieza social de la campaña nacional GEW · RD.
 
-El papel aquí es el de National Host: GEW es la marca primaria y Enlata e
+El papel aquí es el de Partner: GEW es la marca primaria y Enlata e
 IAvanza van en la banda del pie. Es la plantilla de las láminas 20, 24, 28,
 32, 36 y 40 de la guía de National Hosts.
 

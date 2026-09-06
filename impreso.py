@@ -240,7 +240,7 @@ def certificado(nombre, texto=None, tipo="participación", con_marcas=False,
     y_f = y_firmas
     f_fi = fuente("Light", round(U * 0.019))
     for cx, quien, cargo in ((round(w * 0.30), "{{NOMBRE}}", "Presidente · Fundación Enlata"),
-                             (round(w * 0.70), "", "National Host · GEW República Dominicana")):
+                             (round(w * 0.70), "", "Partner · GEW República Dominicana")):
         d.line([(cx - round(U * 0.13), y_f), (cx + round(U * 0.13), y_f)],
                fill="#C0C0C0", width=max(1, round(U * 0.0016)))
         if quien:

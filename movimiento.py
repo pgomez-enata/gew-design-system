@@ -94,8 +94,10 @@ ELEGIDO = "pulso"
 # no anfitrión + aliado. Y hace falta un espacio para los patrocinadores del
 # movimiento, que antes no existía.
 #
-# Confirmado el 5-sep-2026: el papel de «National Host» queda retirado del
-# sistema. `auditar_index.py` falla si reaparece atribuido a Enlata.
+# Confirmado el 5-sep-2026: el papel anterior queda retirado del sistema y
+# `auditar_index.py` falla si reaparece. Ese término no se escribe aquí a
+# propósito: es la cuarta vez que un comentario que explica una regla contiene
+# justo lo que la regla busca.
 #
 # Los rótulos van BILINGÜES por decisión suya. «PARTNERS» se escribe igual en
 # los dos idiomas, así que sólo los otros dos llevan las dos palabras.

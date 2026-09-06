@@ -617,7 +617,7 @@ CARTA = {
     ],
     "despedida": "Gracias por el tiempo y por la sala.",
     "firma": "{{NOMBRE}}",
-    "cargo": "Presidente · Fundación Enlata · National Host GEW República Dominicana",
+    "cargo": "Presidente · Fundación Enlata · Partner de GEW República Dominicana",
     "pie": "La Semana Global de Emprendimiento es una iniciativa de la Global "
            "Entrepreneurship Network, cuyo socio fundador es la Kauffman Foundation.",
 }
