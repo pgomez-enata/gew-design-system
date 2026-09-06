@@ -25,7 +25,34 @@ BLANCO = "#FFFFFF"
 TINTA = TOK["color"]["marca"]["carbon-wordmark"]["hex"]
 CAP = TOK["tipografia"]["cap_ratio_render"]          # 0.725 — el de render, no el de la tabla
 
-FUENTE = {p: f"{RAIZ}/fuentes/VAGRoundedStd{p}.ttf" for p in ("Thin", "Light", "Bold", "Black")}
+# ── de dónde salen los activos ─────────────────────────────────────────
+# El repositorio no lleva la marca de GEN ni VAG Rounded: son de terceros. Sí
+# lleva `ejemplo/`, un juego de marcador con un lockup liso, socios inventados,
+# imágenes sintéticas y Poppins (SIL Open Font License). Si un activo no está
+# en su sitio, se busca ahí: un clon recién bajado arranca sin hacer nada, y lo
+# que ve es el motor de verdad con otra marca — que es exactamente lo que puede
+# hacer con la suya.
+EJEMPLO = os.environ.get("GEW_EJEMPLO", f"{RAIZ}/ejemplo")
+
+
+def activo(rel):
+    """Ruta de un activo: el propio si está, el de ejemplo si no."""
+    propio = rel if os.path.isabs(rel) else f"{RAIZ}/{rel}"
+    if os.path.exists(propio):
+        return propio
+    if not os.path.isabs(rel):
+        alt = f"{EJEMPLO}/{rel}"
+        if os.path.exists(alt):
+            return alt
+    # y el mismo nombre en PNG, que es como llega casi siempre una marca
+    for base in (propio, f"{EJEMPLO}/{rel}" if not os.path.isabs(rel) else None):
+        if base and base.endswith(".svg") and os.path.exists(base[:-4] + ".png"):
+            return base[:-4] + ".png"
+    return propio          # que falle donde toca, con su mensaje
+
+
+FUENTE = {p: activo(f"fuentes/VAGRoundedStd{p}.ttf")
+          for p in ("Thin", "Light", "Bold", "Black")}
 
 # Todo se expresa en fracciones del ancho: la pieza escala sin tocar números.
 # `escala` multiplica la retícula tipográfica: la retícula va en fracciones del
@@ -113,11 +140,16 @@ def tinta(draw, xy, texto, font, **kw):
 def svg_png(svg, alto):
     """Rasteriza un SVG a una altura dada, con caché."""
     if not os.path.exists(svg):
-        # un PNG con el mismo nombre sirve igual: lo más común es que quien
-        # clone traiga su marca en PNG, no en vector
+        # un PNG con el mismo nombre sirve igual, y si tampoco está se mira en
+        # `ejemplo/`: lo más común es traer la marca en PNG, no en vector
         alt = svg[:-4] + ".png" if svg.endswith(".svg") else None
         if alt and os.path.exists(alt):
             return png_alto(alt, alto)
+        rel = os.path.relpath(svg, RAIZ) if svg.startswith(RAIZ) else None
+        if rel:
+            r = activo(rel)
+            if os.path.exists(r):
+                return svg_png(r, alto) if r.endswith(".svg") else png_alto(r, alto)
         raise SystemExit(
             f"falta el activo: {os.path.relpath(svg, RAIZ)}\n"
             f"Los logotipos no viajan en el repositorio: son de terceros.\n"
@@ -139,6 +171,8 @@ def png_alto(ruta, alto):
         alt = ruta[:-4] + ".png" if ruta.endswith(".svg") else None
         if alt and os.path.exists(alt):
             ruta = alt
+        elif ruta.startswith(RAIZ):
+            ruta = activo(os.path.relpath(ruta, RAIZ))
     if not os.path.exists(ruta):
         raise SystemExit(
             f"falta el activo: {os.path.relpath(ruta, RAIZ)}\n"

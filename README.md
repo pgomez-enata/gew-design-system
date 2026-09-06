@@ -4,7 +4,7 @@ Motor que compone las piezas de la campaña **y se niega a sacar una que
 incumpla**. Fundación Enlata e IAvanza son los dos Partners de GEW en
 República Dominicana; IA Media firma la cobertura.
 
-Sistema v1.0.0 · 37 ficheros · código MIT, marca no — ver [LICENCIAS.md](LICENCIAS.md)
+Sistema v1.0.0 · 68 ficheros · código MIT, marca no — ver [LICENCIAS.md](LICENCIAS.md)
 
 ## Qué hace
 
@@ -16,6 +16,23 @@ sale está bien.
 
 Todo sale de **`tokens/tokens.json`**, que es la fuente de verdad, y cada valor
 trae de dónde salió. Lo que no está medido está marcado como no medido.
+
+## Arranca sin configurar nada
+
+Clona y corre. No lleva la marca real —el logotipo es de la Global
+Entrepreneurship Network y VAG Rounded Std es licenciada—, pero sí lleva
+**`ejemplo/`**: un lockup de marcador, socios inventados, imágenes sintéticas
+y Poppins (SIL Open Font License). Si un activo no está en `logo/` o
+`fuentes/`, el sistema lo busca ahí solo.
+
+```bash
+git clone https://github.com/pgomez-enata/gew-design-system.git
+cd gew-design-system
+python3 campana.py --audiencia publico --pieza 0    # ya sale una pieza
+```
+
+Cuando pongas tu logotipo en `logo/` y tu tipografía en `fuentes/`, mandan los
+tuyos. `python3 entorno.py` te dice cuáles está usando de ejemplo.
 
 ## El orden
 
@@ -60,6 +77,7 @@ porque se contradicen entre sí.
 
 ## Para usarlo con tu marca
 
-Pon tu logotipo en `logo/` y tu tipografía en `fuentes/` (ninguna de las dos
-viaja aquí, ver [LICENCIAS.md](LICENCIAS.md)), ajusta `tokens/tokens.json` y
-corre `python3 entorno.py`, que te dirá qué falta.
+Pon tu logotipo en `logo/` y tu tipografía en `fuentes/` —los de `ejemplo/`
+dejan de usarse en cuanto existan los tuyos—, ajusta `tokens/tokens.json` y
+corre `python3 entorno.py`, que te dirá cuáles son tuyos y cuáles siguen
+saliendo de ejemplo. Ver [LICENCIAS.md](LICENCIAS.md).

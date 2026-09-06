@@ -5,6 +5,6 @@ __pycache__/
 *.pyc
 .DS_Store
 
-# activos de terceros: ver ACTIVOS.md
+# activos de terceros: ver ACTIVOS.md. `ejemplo/` SÍ va.
 fuentes/
 logo/

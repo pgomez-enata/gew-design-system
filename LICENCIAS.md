@@ -32,5 +32,18 @@ Lo que **no** está bajo la licencia MIT y **no viaja en este repositorio**:
   salir en un repositorio.
 
 `ACTIVOS.md` dice exactamente qué ficheros faltan y de dónde salió cada uno.
-Si quieres usar el motor para tu organización, pon tu marca en `logo/` y tu
-tipografía en `fuentes/`: está pensado para eso.
+
+## Lo que sí viaja: `ejemplo/`
+
+Un juego de marcador para que el motor arranque sin nada más:
+
+- **Los logotipos de ejemplo son nuestros**: un anillo liso —a propósito, no
+  imita la rueda de GEN— y unas cajas que dicen «SOCIO UNO» y «SOCIO DOS».
+- **La tipografía es Poppins**, con licencia SIL Open Font. Los ficheros se
+  llaman `VAGRoundedStd*` porque es lo que el motor busca; no son VAG Rounded.
+  La OFL viaja con ellos.
+- **Las imágenes son sintéticas**: bandas grises generadas por código.
+
+Todo eso sí está cubierto por la licencia de este repositorio. Si quieres usar
+el motor para tu organización, pon tu marca en `logo/` y tu tipografía en
+`fuentes/`: está pensado para eso.

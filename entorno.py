@@ -136,13 +136,24 @@ def revisar():
                   "los activos son los que declara ACTIVOS.md"
                   + (f" — CAMBIÓ: {', '.join(cambiados[:3])}" if cambiados else "")))
 
+    from campana import activo, EJEMPLO      # noqa: E402
+    de_ejemplo = 0
     for rel, obl, para in ACTIVOS:
         p = f"{RAIZ}/{rel}"
-        hay = os.path.exists(p)
-        tam = f"{os.path.getsize(p)/1024:.0f} KB" if hay else "—"
-        filas.append((rel, hay, obl, tam, para))
+        real = activo(rel)
+        hay = os.path.exists(real)
+        es_ej = hay and real.startswith(EJEMPLO)
+        de_ejemplo += 1 if es_ej else 0
+        tam = f"{os.path.getsize(real)/1024:.0f} KB" if hay else "—"
+        filas.append((rel, hay, obl,
+                      tam + ("  ← ejemplo" if es_ej else ""), para))
         if not hay and obl:
             faltan.append(rel)
+    if de_ejemplo:
+        filas.append(("activos propios", True, False,
+                      f"{len(ACTIVOS) - de_ejemplo}/{len(ACTIVOS)}",
+                      f"los otros {de_ejemplo} salen de ejemplo/ — el sistema "
+                      f"corre, pero con marca de marcador"))
     return filas, faltan, cmds
 
 
