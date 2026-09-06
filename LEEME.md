@@ -10,7 +10,8 @@ de marca: todo sale de ahí.
 
 ---
 
-**Repo público**: <https://github.com/pgomez-enata/gew-design-system> — código
+**Repo público**: <https://github.com/pgomez-enata/gew-design-system>
+**El sistema, en pantalla**: <https://pgomez-enata.github.io/gew-design-system/> — código
 MIT; la marca, la tipografía y las piezas producidas no viajan (ver
 `ACTIVOS.md`). Se rearma con `python3 empaquetar.py`, que **no publica**.
 

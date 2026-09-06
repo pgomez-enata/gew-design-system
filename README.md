@@ -4,6 +4,9 @@ Motor que compone las piezas de la campaña **y se niega a sacar una que
 incumpla**. Fundación Enlata e IAvanza son los dos Partners de GEW en
 República Dominicana; IA Media firma la cobertura.
 
+**→ [Ver el sistema en funcionamiento](https://pgomez-enata.github.io/gew-design-system/)**
+· 20 secciones con las piezas que produce, la retícula, el pulso y las reglas.
+
 Sistema v1.0.0 · 68 ficheros · código MIT, marca no — ver [LICENCIAS.md](LICENCIAS.md)
 
 ## Qué hace
