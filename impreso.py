@@ -139,14 +139,37 @@ def credencial(nombre, org="", rol="", con_marcas=False, salida=None):
     return im, med
 
 
-def certificado(nombre, texto=None, tipo="participación", con_marcas=False, salida=None):
+def reconocimiento(nombre, rol="ponente", org="", texto=None, con_marcas=False,
+                   salida=None):
+    """Reconocimiento a quien puso el contenido. Es el certificado con otro
+    encabezado y un renglón más: el papel y la organización de quien lo recibe.
+    Se le da a ponentes, moderadores y a quien prestó la sede.
+
+    No es un certificado de participación con otro título: al ponente se le
+    reconoce lo que hizo, y eso va escrito."""
+    por_defecto = {
+        "ponente": "por compartir lo que sabe con quien está empezando",
+        "moderador": "por conducir la conversación y dejar hablar a todos",
+        "jurado": "por evaluar con criterio y devolver algo útil",
+        "sede": "por abrir sus puertas a la Semana Global de Emprendimiento",
+        "mentor": "por sentarse a resolver problemas ajenos como si fueran suyos",
+    }
+    txt = texto or por_defecto.get(rol, por_defecto["ponente"])
+    return certificado(nombre, texto=txt, tipo=f"reconocimiento · {rol}",
+                       con_marcas=con_marcas, salida=salida, org=org,
+                       encabezado="RECONOCIMIENTO")
+
+
+def certificado(nombre, texto=None, tipo="participación", con_marcas=False,
+                salida=None, org="", encabezado=None):
     w, h, sang, dpi, a_cm, h_cm = lienzo("certificado")
     U = w - sang * 2
     m = round(U * 0.095)
     im = Image.new("RGB", (w, h), BLANCO)
     d = ImageDraw.Draw(im)
-    med = {"tipo": "certificado", "cm": [a_cm, h_cm], "dpi": dpi, "px": [w, h],
-           "sangrado_px": sang}
+    med = {"tipo": "reconocimiento" if encabezado else "certificado",
+           "cm": [a_cm, h_cm], "dpi": dpi, "px": [w, h], "sangrado_px": sang,
+           "rol": tipo}
 
     pulso(d, 0, 0, w, sang + round(U * 0.020))     # certificado: arriba y abajo
     pulso(d, 0, h - sang - round(U * 0.020), w, round(U * 0.020))
@@ -155,7 +178,7 @@ def certificado(nombre, texto=None, tipo="participación", con_marcas=False, sal
 
     y = sang + round(U * 0.055) + lock.height + round(U * 0.060)
     f_r = fuente("Bold", round(U * 0.021))
-    t = f"CERTIFICADO DE {tipo.upper()}"
+    t = encabezado or f"CERTIFICADO DE {tipo.upper()}"
     bb = d.textbbox((0, 0), t, font=f_r)
     d.text(((w - (bb[2] - bb[0])) // 2 - bb[0], y - bb[1]), t, font=f_r, fill=NARANJA)
     y += round(U * 0.021) + round(U * 0.045)
@@ -175,10 +198,17 @@ def certificado(nombre, texto=None, tipo="participación", con_marcas=False, sal
     bb = d.textbbox((0, 0), nombre, font=f_n)
     d.text(((w - (bb[2] - bb[0])) // 2 - bb[0], y - bb[1]), nombre, font=f_n, fill=TINTA)
     y += cap + round(U * 0.022)
+    if org:
+        f_o = fuente("Bold", round(U * 0.026))
+        bb = d.textbbox((0, 0), org, font=f_o)
+        d.text(((w - (bb[2] - bb[0])) // 2 - bb[0], y - bb[1]), org, font=f_o,
+               fill=NARANJA)
+        y += round(U * 0.026) + round(U * 0.016)
     d.line([((w - round(U * 0.42)) // 2, y), ((w + round(U * 0.42)) // 2, y)],
            fill=NARANJA, width=max(2, round(U * 0.0035)))
     y += round(U * 0.045)
     med["cap_nombre"] = cap
+    med["con_org"] = bool(org)
 
     cuerpo = texto or (f"por su participación en la Semana Global de Emprendimiento "
                        f"{TOK['campana']['anio']} en República Dominicana, celebrada "
@@ -333,6 +363,8 @@ def main():
     ap.add_argument("--org", default="")
     ap.add_argument("--rol", default="")
     ap.add_argument("--lista", help="CSV con nombre,org,rol para generar en lote")
+    ap.add_argument("--reconocimiento", metavar="ROL",
+                    help="ponente | moderador | jurado | sede | mentor")
     ap.add_argument("--marcas", action="store_true", help="añade las marcas de corte")
     ap.add_argument("--todos", action="store_true")
     ap.add_argument("--salida", default=f"{RAIZ}/_salida/impreso")
@@ -345,10 +377,14 @@ def main():
                                                  f"{a.salida}/credencial.png")[1:]))
         hechas.append(("certificado", *certificado("Nombre Apellido", con_marcas=a.marcas,
                                                    salida=f"{a.salida}/certificado.png")[1:]))
+        hechas.append(("reconocimiento",
+                       *reconocimiento("Nombre Apellido", "ponente", "Organización",
+                                       con_marcas=a.marcas,
+                                       salida=f"{a.salida}/reconocimiento.png")[1:]))
         for t in ("rollup", "backdrop"):
             hechas.append((t, *gran_formato(t, con_marcas=a.marcas,
                                             salida=f"{a.salida}/{t}.png")[1:]))
-        print(f"producidas {len(hechas)} de 4 esperadas")
+        print(f"producidas {len(hechas)} de 5 esperadas")
         for t, med in hechas:
             aviso = med.get("aviso_logo")
             print(f"  {t:12s} {med['cm'][0]:g}×{med['cm'][1]:g} cm @ {med['dpi']} dpi "

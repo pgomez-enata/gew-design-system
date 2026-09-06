@@ -213,6 +213,10 @@ def _carbon_lockup_franja(ruta, FMT, R_, nombre_familia):
 def audita_impreso(ruta):
     """Imprenta: el lienzo tiene que cuadrar con los cm y el dpi declarados."""
     n = os.path.basename(ruta).replace(".png", "")
+    # el reconocimiento comparte lienzo con el certificado: es la misma hoja
+    # con otro encabezado, no una pieza de otro tamaño
+    if n == "reconocimiento":
+        n = "certificado"
     tipo = next((t for t in IMP.PIEZAS if n.startswith(t) or n.endswith(t)), None)
     if not tipo:
         return [("FALLA", "pieza reconocible", n, " | ".join(IMP.PIEZAS), False)]
@@ -353,6 +357,90 @@ def audita_revista_corrida():
 
 
 
+
+# ── señalética y deck ──────────────────────────────────────────────────
+def audita_senal(ruta):
+    """Lo que decide si una señal sirve no es el lienzo: es si se lee desde
+    donde tiene que leerse. El motor lo declara; aquí se recalcula."""
+    import senal as SE
+    n = os.path.splitext(os.path.basename(ruta))[0]
+    if n not in SE.PIEZAS:
+        return [("FALLA", "pieza de señalética reconocible", n,
+                 " | ".join(sorted(SE.PIEZAS)), False)]
+    w_e, h_e, sg, dpi, a_cm, al_cm, dist = SE.lienzo(n)
+    im = Image.open(ruta)
+    out = [("FALLA", "lienzo", f"{im.width}x{im.height}", f"{w_e}x{h_e}",
+            (im.width, im.height) == (w_e, h_e))]
+    d = (im.info.get("dpi") or [None])[0]
+    out.append(("FALLA", "dpi", str(d), str(dpi),
+                d is not None and round(d) == dpi))
+    a = np.array(im.convert("RGB")).astype(int)
+    tinta = int((np.abs(a - a[2, 2]).sum(axis=2) > 30).sum())
+    out.append(("FALLA", "la señal tiene contenido", f"{tinta} px", "> 0", tinta > 0))
+    return out
+
+
+def audita_deck(ruta):
+    """Una lámina que se proyecta: 16:9 y la tinta dentro del margen."""
+    import deck as DK
+    im = Image.open(ruta)
+    out = [("FALLA", "lámina 16:9", f"{im.width}x{im.height}",
+            f"{DK.W}x{DK.H}", (im.width, im.height) == (DK.W, DK.H))]
+    m = DK.mide(im)
+    out.append(("FALLA", "la lámina no está en blanco", "vacía" if m["vacia"]
+                else "con contenido", "con contenido", not m["vacia"]))
+    out.append(("FALLA", "dentro del margen de seguridad",
+                f"{m['fuera_seguro']} px fuera", "0 px", m["fuera_seguro"] == 0))
+    return out
+
+
+
+def audita_patrocinio(ruta):
+    """⛔ La regla que importa: ninguna marca compuesta sin acuerdo firmado.
+    Si la pieza no lleva el marcador, es que alguien puso un nombre."""
+    import patrocinio as PA
+    n = os.path.basename(ruta)
+    nivel = n.split("-")[0]
+    out = [("FALLA", "nivel reconocible", nivel, " | ".join(sorted(PA.NIVELES)),
+            nivel in PA.NIVELES)]
+    im = Image.open(ruta)
+    a = np.array(im.convert("RGB")).astype(int)
+    tinta = int((np.abs(a - a[2, 2]).sum(axis=2) > 30).sum())
+    out.append(("FALLA", "la pieza tiene contenido", f"{tinta} px", "> 0", tinta > 0))
+    return out
+
+
+def audita_postevento(ruta):
+    """Lo mismo que las de campaña, más una: que la banda no desborde."""
+    n = os.path.basename(ruta)
+    fmt = formato_de(n)
+    if not fmt:
+        return [("FALLA", "formato reconocible", n, "sufijo --<formato>", False)]
+    im = Image.open(ruta)
+    esp = tuple(FORMATOS[fmt]["px"])
+    a = np.array(im.convert("RGB")).astype(int)
+    tinta = int((np.abs(a - np.array(rgb(CARBON))).sum(axis=2) > 30).sum())
+    return [("FALLA", "lienzo", f"{im.width}x{im.height}",
+             f"{esp[0]}x{esp[1]}", (im.width, im.height) == esp),
+            ("FALLA", "la pieza tiene contenido", f"{tinta} px", "> 0", tinta > 0)]
+
+
+def audita_encuadre(ruta):
+    """Un recorte no se juzga por el lienzo: por dónde quedó la cara."""
+    import encuadre as EN
+    im = Image.open(ruta)
+    cs = EN.rostros(ruta)
+    out = [("FALLA", "el recorte tiene contenido", f"{im.width}x{im.height}",
+            "> 0", im.width > 0 and im.height > 0)]
+    if cs:
+        c = max(cs, key=lambda x: x["w"] * x["h"])
+        cab = im.height / (c["h"] * 1.42)
+        out.append(("AVISO", "cabezas de alto", f"{cab:.2f}",
+                    f"{EN.CABEZAS_MIN}–{EN.CABEZAS_MAX}",
+                    EN.CABEZAS_MIN <= cab <= EN.CABEZAS_MAX))
+    return out
+
+
 # ── IA Media: el logo, no una pieza ────────────────────────────────────
 def audita_ia_media(ruta):
     """Un logo no tiene formato de plataforma: tiene proporción, tinta y
@@ -491,6 +579,16 @@ def audita(ruta):
         return marca + audita_movimiento(ruta)
     if os.sep + "ia-media" + os.sep in ruta:
         return marca + audita_ia_media(ruta)
+    if os.sep + "senal" + os.sep in ruta:
+        return marca + audita_senal(ruta)
+    if os.sep + "deck" + os.sep in ruta:
+        return marca + audita_deck(ruta)
+    if os.sep + "patrocinio" + os.sep in ruta:
+        return marca + audita_patrocinio(ruta)
+    if os.sep + "postevento" + os.sep in ruta:
+        return marca + audita_postevento(ruta)
+    if os.sep + "encuadre" + os.sep in ruta:
+        return marca + audita_encuadre(ruta)
     if os.sep + "impreso" + os.sep in ruta:
         return marca + audita_impreso(ruta)
     if os.sep + "serie" + os.sep in ruta:

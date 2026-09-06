@@ -49,6 +49,13 @@ la estaba mirando.
 | `perfil.py` | Portada de canal de YouTube, portada y logo de página de LinkedIn. |
 | `revista.py` · `revista_reporte.py` | La revista de recap: 32 páginas, 23 tipos. |
 | `prensa.py` | Nota de prensa, boilerplate y ángulos, según la plantilla de GEN. |
+| `senal.py` | Señalética de sede. **Declara a qué distancia se lee cada pieza.** |
+| `deck.py` | Deck para las charlas: 7 tipos de lámina, PNG y PDF. |
+| `correo.py` | Cuatro correos en HTML y texto plano, medidos contra el tope de Gmail. |
+| `movimiento_video.py` | Apertura, cuenta atrás y endcard **en movimiento**, con ffmpeg. |
+| `patrocinio.py` | Anuncio y placa por nivel. ⛔ Sin acuerdo firmado, `{{PENDIENTE}}`. |
+| `postevento.py` | Gracias y los números, por actividad y del total. |
+| `calendario.py` | El `.ics` de la semana y de cada actividad. |
 | `movimiento.py` | La lámina que compara los tres elementos y las piezas de ejemplo del pulso. |
 
 ## Las herramientas
@@ -59,6 +66,7 @@ la estaba mirando.
 | `metadatos.py` | Mete la procedencia dentro del PNG: XMP con campos IPTC 2025.1 + chunks legibles. `--verificar` dice cuántas están sin sellar. |
 | `manifiesto.py` | Escribe `_salida/manifiesto.json` con el hash de cada fichero. `--verificar` distingue CAMBIADO, FALTA y SOBRA. |
 | `auditoria.py` | Las reglas. Cada una devuelve un número y lo compara con su umbral; no opina. |
+| `encuadre.py` | Coloca el retrato con el mismo criterio en todos los formatos: cabeza entre 1/3,5 y 1/3 del alto, ojos a 0,38. |
 
 ---
 
@@ -86,7 +94,7 @@ mundo es consenso de terceros. Funciona, pero no se cita como norma.
 
 Desde el 5-sep-2026 toda pieza lleva **el pulso** —39 barras cuya altura es el
 ancho angular real de cada segmento del anillo GEW·RD— y **los tres bloques de
-marca**. Los dos viven en `campana.py` y los usan los doce motores: una función
+marca**. Los dos viven en `campana.py` y los usan los diecinueve motores: una función
 en dos ficheros se separa sola.
 
 ```

@@ -33,7 +33,9 @@ MEDIBLES_SI_HAY_SALIDA = {"piezas", "kits", "páginas"}
 
 MOTORES = ["campana.py", "actividad.py", "cita.py", "video.py", "serie.py",
            "aliado.py", "impreso.py", "perfil.py", "revista.py",
-           "revista_reporte.py", "prensa.py", "movimiento.py"]
+           "revista_reporte.py", "prensa.py", "movimiento.py",
+           "senal.py", "deck.py", "correo.py", "movimiento_video.py",
+           "patrocinio.py", "postevento.py", "calendario.py"]
 
 # Términos retirados: si aparecen, el index habla de algo que ya no es.
 RETIRADOS = {

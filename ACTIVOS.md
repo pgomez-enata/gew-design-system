@@ -14,7 +14,7 @@ exactamente qué le falta. `python3 entorno.py` comprueba que están **y que son
 los mismos**: los hashes de abajo se verifican, no son decoración. Se regraba
 con `python3 sellar_activos.py`, y sólo cuando el cambio fue a propósito.
 
-Medido el 2026-09-05 · sistema v1.0.0
+Medido el 2026-09-06 · sistema v1.2.0
 
 | Fichero | Bytes | sha256 (16) |
 |---|---:|---|

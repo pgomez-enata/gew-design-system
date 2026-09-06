@@ -74,7 +74,7 @@ ul{padding-left:20px;margin:8px 0} li{margin:6px 0;color:#444}
 <div class="wrap">
 <header>
 <h1>Semana Global de Emprendimiento</h1><p class="meta">Esta página se ve con la tipografía del sistema: <strong>VAG Rounded Std es licenciada y no viaja en el repositorio</strong>. Ver <a href="LICENCIAS.md">LICENCIAS.md</a>.</p>
-<p class="sub">Sistema de diseño · República Dominicana · v1.0.0 · 2026-09-05<br>
+<p class="sub">Sistema de diseño · República Dominicana · v1.2.0 · 2026-09-05<br>
 Enlata e IAvanza son <strong>Partners</strong> de GEW en República Dominicana; <strong>IA Media</strong> firma la cobertura. Cada valor de esta página trae de dónde salió.</p>
 <div class="rule"><b style="background:#009ACB"><em style="color:#383433">#009ACB</em></b><b style="background:#D6DD2A"><em style="color:#383433">#D6DD2A</em></b><b style="background:#FF7C10"><em style="color:#383433">#FF7C10</em></b><b style="background:#AF1419"><em style="color:#FFFFFF">#AF1419</em></b><b style="background:#DF7A99"><em style="color:#383433">#DF7A99</em></b><b style="background:#611237"><em style="color:#FFFFFF">#611237</em></b></div>
 </header>
@@ -332,6 +332,26 @@ Dos avisos más: el boilerplate de GEN se contradice consigo mismo (<code>$4M+ /
 <div class="warn"><strong>El mapa sale de Natural Earth, que es dominio público</strong> — las 32 provincias con su geometría y su nombre. Se descartó el de Wikimedia Commons porque es CC BY-SA: obligaría a licenciar toda la revista bajo la misma licencia.<br><br>
 <strong>Las cifras que aún no existen van como <code>{{N}}</code> a propósito.</strong> Salen del formulario de actividades y de las hojas de registro, que todavía no han cerrado. En un recap, un número inventado es peor que un hueco: el hueco se rellena y el número falso se cita.</div>
 <div class="warn"><strong>Falta el perfil de color.</strong> Las páginas salen en RGB. Ninguna imprenta dominicana publica su perfil ICC, así que hay que pedírselo a la que se elija — Amigo del Hogar y Editora Corripio hacen revistas. También hay que confirmar el gramaje del papel: la compensación de creep asume 130 g.</div>
+<h2>Evento, deck, correo y vídeo</h2><div class="hr"></div>
+<p class="sub" style="margin:14px 0 18px">Las cuatro familias que faltaban para la semana. Cada una mide lo suyo antes de entregarlo.</p>
+<div class="cols">
+<div class="card"><h4>Señalética · 5 piezas</h4><p>Direccional A2, sala A3, registro A3, wifi y el horario de puerta. <strong>Declara a qué distancia se lee cada una</strong>: 2,5 cm de letra por cada 3 m, medido sobre la tinta real. Si no se lee desde donde debe, el motor lo dice antes de imprimir.</p></div>
+<div class="card"><h4>Deck · 7 tipos de lámina</h4><p>Portada, sección, texto, lista, dato, cita y cierre. 1920×1080 con margen de seguridad del 10 % y los títulos dentro del 80 % central, que es el «título seguro» de la norma de televisión. Sale en PNG y en PDF.</p></div>
+<div class="card"><h4>Correo · 4 envíos</h4><p>Invitación, confirmación, recordatorio y cierre, en HTML y en texto plano. Maquetado con <code>&lt;table&gt;</code> porque <strong>el Outlook clásico ignora flexbox y grid</strong>, y medido contra los <strong>102 KB donde Gmail recorta</strong>.</p></div>
+<div class="card"><h4>Vídeo · 6 piezas</h4><p>Apertura, cuenta atrás y endcard, en vertical y horizontal. Frames compuestos en PIL y montados con ffmpeg: H.264 High y yuv420p, que es lo que pide YouTube. Sin audio a propósito.</p></div>
+</div>
+<p class="meta" style="margin-top:14px">⚠️ Tres cifras que circulan como norma y no lo son: Meta <strong>no publica</strong> el bitrate de Reels, no hay página oficial de Google con el −14 LUFS, y WhatsApp no publica specs de estado. Lo que sí está documentado: TikTok pide ≥516 kbps y YouTube 8 Mbps para 1080p SDR.</p>
+
+<h2>Cierre: reconocimiento, patrocinio, post-evento y encuadre</h2><div class="hr"></div>
+<p class="sub" style="margin:14px 0 18px">Lo que faltaba para cerrar el ciclo con quien puso el contenido, con quien puso el dinero y con quien vino.</p>
+<div class="cols">
+<div class="card"><h4>Reconocimiento a ponentes</h4><p>Cinco papeles —ponente, moderador, jurado, sede y mentor—, cada uno con su motivo escrito. No es un certificado de participación con otro título: al ponente se le reconoce lo que hizo.</p></div>
+<div class="card"><h4>Patrocinio · 3 niveles</h4><p>Anuncio, placa para su web y certificado. ⛔ <strong>Sin acuerdo firmado el motor compone <code>{{PENDIENTE}}</code></strong> y lo avisa: poner un logo antes de tiempo ya ha costado disgustos.</p></div>
+<div class="card"><h4>Post-evento</h4><p>Gracias y los números, por actividad y del total. ⚠️ Las cifras van como <code>{{N}}</code> mientras no existan: un recap con un número inventado se cita en la propuesta del año siguiente.</p></div>
+<div class="card"><h4>Encuadre de retratos</h4><p>Criterio propio y medido: cabeza entre 1/3,5 y 1/3 del alto, <strong>ojos a 0,38</strong> y la coronilla sin cortar. Detecta la cara con Vision de macOS y declara cuántas cabezas de alto quedó.</p></div>
+</div>
+<p class="meta" style="margin-top:14px">Y un <code>.ics</code> que el aliado abre y se le mete la actividad en el móvil. Plegado a <strong>75 octetos, no 75 caracteres</strong>: con acentos no es lo mismo y hay clientes que cortan a mitad de carácter.</p>
+
 <h2>Procedencia y control</h2><div class="hr"></div>
 <p class="sub" style="margin:14px 0 18px">Los cuatro pasos que convierten un PNG en una pieza entregable. Saltarse el segundo deja piezas sin procedencia y la auditoría lo marca en rojo.</p>
 <div class="cols">
@@ -343,7 +363,7 @@ Dos avisos más: el boilerplate de GEN se contradice consigo mismo (<code>$4M+ /
 <p class="meta" style="margin-top:14px">Y <code>auditar_index.py</code> compara esta misma página contra el sistema: si el index declara una cifra que ya no es cierta, o nombra algo retirado, falla. Es lo que evitó que esta página siguiera diciendo «National Host» y «362 piezas».</p>
 
 <h2>Estado</h2><div class="hr"></div>
-<p class="sub" style="margin:14px 0 18px">Sistema v1.0.0 · <b data-real="piezas">410</b> piezas · <b data-real="motores">12</b> motores · <b data-real="formatos">10</b> formatos (<b data-real="formatos de campaña">7</b> de campaña) · <b data-real="kits">48</b> kits de aliado · <b data-real="páginas">32</b> páginas de revista · <b data-real="segmentos">39</b> segmentos del anillo.</p>
+<p class="sub" style="margin:14px 0 18px">Sistema v1.2.0 · <b data-real="piezas">435</b> piezas · <b data-real="motores">19</b> motores · <b data-real="formatos">10</b> formatos (<b data-real="formatos de campaña">7</b> de campaña) · <b data-real="kits">48</b> kits de aliado · <b data-real="páginas">32</b> páginas de revista · <b data-real="segmentos">39</b> segmentos del anillo.</p>
 <h3>Cerrado</h3><ul>
 <li><strong>ARQUITECTURA</strong> — sistema GEW separado, no un modo dentro de iavanza_design_system.</li>
 <li><strong>TIPOGRAFÍA</strong> — VAG Rounded Std, hay derecho de uso. Verificado que el logo usa el peso Thin (IoU 0,9547 contra 0,8467 del Light).</li>
