@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 .DS_Store
 
-# activos de terceros: ver ACTIVOS.md. `ejemplo/` SÍ va.
-fuentes/
-logo/
+# Activos de terceros: ver ACTIVOS.md.
+# Con barra inicial, para NO tocar ejemplo/logo ni ejemplo/fuentes, que sí viajan.
+/fuentes/
+/logo/
