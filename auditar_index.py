@@ -27,6 +27,10 @@ INDEX = f"{RAIZ}/index.html"
 # no se rompe sola: si nace un motor y no se apunta, el auditor lo dice.
 # `empaquetar.py` la tiene igual, pero no viaja al repo público y este fichero
 # sí, así que no puede depender de él.
+# Cifras que dependen de haber construido, o de tener el padrón real. Que
+# falten aquí no es un defecto del index.
+MEDIBLES_SI_HAY_SALIDA = {"piezas", "kits", "páginas"}
+
 MOTORES = ["campana.py", "actividad.py", "cita.py", "video.py", "serie.py",
            "aliado.py", "impreso.py", "perfil.py", "revista.py",
            "revista_reporte.py", "prensa.py", "movimiento.py"]
@@ -143,15 +147,18 @@ def main():
     # construido. `páginas` sale del informe de la revista, que sólo existe si
     # se corrió — en un clon con otros motores corridos, `_salida/` existe pero
     # ese informe no, y el auditor acusaba al index de mentir.
+    # Tres cosas distintas, y confundirlas hacía que el auditor acusara al index
+    # de mentir cuando el que no podía medir era él:
+    #   · lo que real() sabe medir pero aquí no hay → aviso
+    #   · lo que real() no conoce                   → fallo, sobra o falta código
     sin_medir = set(marcadas) - set(R)
-    medibles = hay_salida and os.path.exists(f"{RAIZ}/_salida/revista/informe.json")
-    if sin_medir and medibles:
-        for clave in sorted(sin_medir):
-            fallos.append(f'  FALLA  data-real="{clave}" no lo mide el auditor: '
-                          "o sobra en el HTML o falta en real()")
-    elif sin_medir:
-        avisos.append("  AVISO  no se pueden comprobar aquí (falta construir): "
-                      + ", ".join(sorted(sin_medir)))
+    aqui_no_hay = {c for c in sin_medir if c in MEDIBLES_SI_HAY_SALIDA}
+    for clave in sorted(sin_medir - aqui_no_hay):
+        fallos.append(f'  FALLA  data-real="{clave}" no lo mide el auditor: '
+                      "o sobra en el HTML o falta en real()")
+    if aqui_no_hay:
+        avisos.append("  AVISO  no se pueden comprobar en esta copia: "
+                      + ", ".join(sorted(aqui_no_hay)))
 
     print(f"index {os.path.getsize(INDEX):,} bytes · "
           f"{len(re.findall(r'<h2', crudo))} secciones · "
