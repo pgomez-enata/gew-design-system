@@ -581,10 +581,14 @@ def audita(ruta):
 
 
 def main():
-    # el paquete público no es producción: lo arma y lo borra empaquetar.py
-    rutas = sys.argv[1:] or (sorted(glob.glob(f"{RAIZ}/_salida/*.png"))
-                             + sorted(glob.glob(f"{RAIZ}/_salida/*/*.png"))
-                             + sorted(glob.glob(f"{RAIZ}/_salida/*/*/*.png")))
+    # `publico/` y `demo/` son andamios, no producción: el paquete para
+    # GitHub y el sistema corriendo con activos de marcador.
+    ANDAMIOS = (f"{os.sep}publico{os.sep}", f"{os.sep}demo{os.sep}")
+    rutas = sys.argv[1:] or [
+        p for p in (sorted(glob.glob(f"{RAIZ}/_salida/*.png"))
+                    + sorted(glob.glob(f"{RAIZ}/_salida/*/*.png"))
+                    + sorted(glob.glob(f"{RAIZ}/_salida/*/*/*.png")))
+        if not any(a in p for a in ANDAMIOS)]
     if not rutas:
         sys.exit("no hay nada que auditar en _salida/")
     fallos, avisos, reglas = [], [], 0

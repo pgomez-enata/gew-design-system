@@ -7,7 +7,7 @@ marcado, no rellenado.
 
 ## 0 · Ya existe un motor de revista y conviene mirarlo
 
-`04 Marca/p4f_design_system/revista.py` — 476 líneas, hecho para Pitch 4 Fun.
+`04 Marca/p4f_design_system/revista.py` — 476 líneas, hecho para Competencia Demo.
 Hay dos PDF producidos con él en `Organizado/02 Pitch4Fun/`.
 
 Ya resuelve: hoja **8.5 × 11 a 150 dpi**, retícula de **6 columnas**, línea base
@@ -34,7 +34,7 @@ contraportada y las dos retiraciones.
 ⚠️ **Para República Dominicana no hay dato.** Ninguna fuente da el porcentaje por
 país. Lo que sí está documentado: México y buena parte de Latinoamérica adoptaron
 US Letter por influencia estadounidense, mientras el resto del mundo usa ISO 216.
-RD no aparece nombrada. Como Pitch 4 Fun ya va en 8.5 × 11 y el papel carta es el
+RD no aparece nombrada. Como Competencia Demo ya va en 8.5 × 11 y el papel carta es el
 que se consigue aquí, **es la apuesta razonable** — pero es una apuesta, no un
 dato.
 
@@ -115,7 +115,7 @@ antes de maquetar**, no después.
 ## 6 · Los elementos que propongo montar
 
 Trece tipos de página. Los cinco primeros ya existen resueltos en el motor de
-Pitch 4 Fun; los ocho restantes son nuevos.
+Competencia Demo; los ocho restantes son nuevos.
 
 ### Cubiertas (4 páginas, siempre)
 

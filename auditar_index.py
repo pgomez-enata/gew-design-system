@@ -70,7 +70,9 @@ def real():
     ahí no son «0»: son «no se pudo medir». Devolverlas como 0 haría que el
     auditor acusara al index de mentir cuando el que no sabe es él."""
     import campana as C
-    png = glob.glob(f"{RAIZ}/_salida/**/*.png", recursive=True)
+    # los andamios (`publico/`, `demo/`) no son piezas del sistema
+    png = [p for p in glob.glob(f"{RAIZ}/_salida/**/*.png", recursive=True)
+           if not any(f"{os.sep}{d}{os.sep}" in p for d in ("publico", "demo"))]
     motores = [f for f in MOTORES if os.path.exists(f"{RAIZ}/{f}")]
     hay_salida = os.path.isdir(f"{RAIZ}/_salida")
     d = {}

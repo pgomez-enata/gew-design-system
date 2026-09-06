@@ -478,8 +478,10 @@ def contraportada(ed):
 
 
 # ── contenido de muestra ───────────────────────────────────────────────
-F = ("/private/tmp/claude-503/-Users-piero-gomez-Desktop-claude-expririences/"
-     "0f0ece8c-23a3-4ed8-9c89-36bcdced60a4/scratchpad/fotos")
+# Las fotos de muestra no viven en el repositorio: son de eventos reales, con
+# caras de gente a la que nadie preguntó. `GEW_FOTOS` dice dónde están; sin esa
+# variable se usan las de `_salida/demo/fotos`, que son sintéticas.
+F = os.environ.get("GEW_FOTOS", os.path.join(RAIZ, "_salida", "demo", "fotos"))
 
 ED = {
     "titular": "Una semana en la que\nel país *emprendió*",
@@ -524,9 +526,9 @@ CUERPO = [
     "las de la mañana costaban.",
     "En los talleres pasó algo que no estaba en el plan: la mitad de las preguntas no "
     "eran sobre cómo empezar, sino sobre cómo sostener lo que ya estaba andando.",
-    "El sábado, la final de Pitch 4 Fun llenó el teatro de la UFHEC y dejó tres "
+    "El sábado, la final de Competencia Demo llenó el teatro de la Demo y dejó tres "
     "proyectos con reunión de seguimiento antes de fin de mes.",
-    "El domingo cerramos en Casa Enlata sin programa, solo con la gente que quiso "
+    "El domingo cerramos en Sala Demo sin programa, solo con la gente que quiso "
     "quedarse a conversar. Fue la sesión más larga de la semana.",
 ]
 CIFRAS = [("48", "organizaciones aliadas", "padrón del muro, enlata.do/gew"),
@@ -542,7 +544,7 @@ ITEMS = [{"titulo": "Talleres", "texto": "Formación práctica en sala, de dos a
 FOTOS = [f"{F}/v-tarima.webp", f"{F}/v-publico.webp", f"{F}/v-equipo.webp",
          f"{F}/v-acreditacion.webp", f"{F}/v-energia.webp", f"{F}/v-detalles.webp"]
 PIES = ["La apertura, lunes 16", "Sala llena el miércoles", "El equipo de voluntarios",
-        "Acreditación", "Cierre en Casa Enlata", "Los detalles"]
+        "Acreditación", "Cierre en Sala Demo", "Los detalles"]
 
 
 # datos de reportería. Las cifras que no existen van como {{N}} a propósito.
@@ -564,16 +566,16 @@ REPORTE = [
     ("Alcance en redes", "{{N}}", "pendiente: métricas de IG y LinkedIn"),
 ]
 DIAS = [("LUN 16", [("9:00", "Apertura nacional"), ("18:00", "Encuentro de aliados")]),
-        ("MAR 17", [("10:00", "Taller de validación"), ("19:00", "Martes de Puyadores")]),
-        ("MIÉ 18", [("9:00", "Financiamiento sin banco"), ("18:00", "IA Lab en Finanzas")]),
+        ("MAR 17", [("10:00", "Taller de validación"), ("19:00", "Encuentro *semanal*")]),
+        ("MIÉ 18", [("9:00", "Financiamiento sin banco"), ("18:00", "Taller de *finanzas*")]),
         ("JUE 19", [("8:00", "Ruta universitaria"), ("16:00", "Mesa de jóvenes")]),
         ("VIE 20", [("9:00", "Mujeres que emprenden"), ("17:00", "Networking")]),
-        ("SÁB 21", [("14:00", "Pitch 4 Fun · final")]),
+        ("SÁB 21", [("14:00", "Competencia Demo · final")]),
         ("DOM 22", [("11:00", "Cierre y celebración")])]
 EVENTO = {
-    "seccion": "Cobertura", "titulo": "La final de *Pitch 4 Fun*",
+    "seccion": "Cobertura", "titulo": "La final de *Competencia Demo*",
     "foto": f"{F}/v-tarima.webp",
-    "ficha": [("Cuándo", "Sábado 21 · 5:00 pm"), ("Dónde", "Teatro UFHEC"),
+    "ficha": [("Cuándo", "Sábado 21 · 5:00 pm"), ("Dónde", "Teatro Demo"),
               ("Organiza", "Fundación Enlata · IAvanza"),
               ("Asistencia", "{{N}} personas")],
     "cronica": "Ocho equipos, cinco minutos cada uno y un jurado que no dejó pasar "
@@ -586,7 +588,7 @@ EVENTO = {
 }
 ALIADOS_RESUMEN = [
     ("JCI República Dominicana", "Taller y mesa de trabajo", "{{N}}"),
-    ("UFHEC", "Sede de la final y ruta universitaria", "{{N}}"),
+    ("Demo", "Sede de la final y ruta universitaria", "{{N}}"),
     ("PUCMM", "Dos talleres en Santiago", "{{N}}"),
     ("El Hueco", "Puertas abiertas toda la semana", "{{N}}"),
     ("Alterna Academy", "Formación en línea", "{{N}}"),

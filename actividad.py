@@ -11,7 +11,7 @@ de National Hosts, con sus tres variantes:
     C · partido    panel carbón a la izquierda, foto a la derecha
 
 Uso:
-    python3 actividad.py --variante A --titulo "IA Lab en Finanzas" \\
+    python3 actividad.py --variante A --titulo "Taller de *finanzas*" \\
         --lugar "Santo Domingo" --fecha "18 de noviembre · 6:00 pm" \\
         --fotos a.jpg b.jpg c.jpg --socios logo1.svg logo2.png
     python3 actividad.py --demo
@@ -247,13 +247,16 @@ def main():
     a = ap.parse_args()
 
     if a.demo:
-        F = "/private/tmp/claude-503/-Users-piero-gomez-Desktop-claude-expririences/0f0ece8c-23a3-4ed8-9c89-36bcdced60a4/scratchpad/fotos"
+        # Las fotos de muestra no viven en el repositorio: son de eventos reales, con
+        # caras de gente a la que nadie preguntó. `GEW_FOTOS` dice dónde están; sin esa
+        # variable se usan las de `_salida/demo/fotos`, que son sintéticas.
+        F = os.environ.get("GEW_FOTOS", os.path.join(RAIZ, "_salida", "demo", "fotos"))
         demo = dict(
-            A=("IA Lab en *Finanzas*", "UNAPEC · Santo Domingo", "18 de noviembre · 6:00 pm",
+            A=("Taller de *finanzas*", "Universidad Demo · Santo Domingo", "18 de noviembre · 6:00 pm",
                [f"{F}/v-tarima.webp", f"{F}/v-acreditacion.webp", f"{F}/v-detalles.webp"]),
-            B=("Martes de *Puyadores*", "Casa Enlata · Piantini", "17 de noviembre · 7:00 pm",
+            B=("Encuentro *semanal*", "Sala Demo · Ciudad", "17 de noviembre · 7:00 pm",
                [f"{F}/v-publico.webp"]),
-            C=("Pitch 4 Fun · *final*", "Teatro UFHEC", "21 de noviembre · 5:00 pm",
+            C=("Competencia Demo · *final*", "Teatro Demo", "21 de noviembre · 5:00 pm",
                [f"{F}/v-tarima.webp"]),
         )
         hechas, esperadas = [], len(demo) * len(FORMATOS)

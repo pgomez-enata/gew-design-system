@@ -113,6 +113,11 @@ def tinta(draw, xy, texto, font, **kw):
 def svg_png(svg, alto):
     """Rasteriza un SVG a una altura dada, con caché."""
     if not os.path.exists(svg):
+        # un PNG con el mismo nombre sirve igual: lo más común es que quien
+        # clone traiga su marca en PNG, no en vector
+        alt = svg[:-4] + ".png" if svg.endswith(".svg") else None
+        if alt and os.path.exists(alt):
+            return png_alto(alt, alto)
         raise SystemExit(
             f"falta el activo: {os.path.relpath(svg, RAIZ)}\n"
             f"Los logotipos no viajan en el repositorio: son de terceros.\n"
@@ -130,6 +135,11 @@ def png_alto(ruta, alto):
     # esto reventaba con un FileNotFoundError y una ruta interna. Un clon
     # merece saber qué le falta y dónde mirarlo.
     if not os.path.exists(ruta):
+        # también aquí: a `png_alto` le llegan rutas .svg desde los motores
+        alt = ruta[:-4] + ".png" if ruta.endswith(".svg") else None
+        if alt and os.path.exists(alt):
+            ruta = alt
+    if not os.path.exists(ruta):
         raise SystemExit(
             f"falta el activo: {os.path.relpath(ruta, RAIZ)}\n"
             f"Los logotipos y la tipografía no viajan en el repositorio: son de "
@@ -140,6 +150,13 @@ def png_alto(ruta, alto):
 
 
 def marca_alto(ruta, alto, blanco=False):
+    # Si se pide un SVG que no está pero hay un PNG con el mismo nombre, se usa
+    # el PNG. No es un parche para la demo: un clon que ponga su marca en PNG
+    # —que es lo más común— funciona sin tocar el código.
+    if ruta.endswith(".svg") and not os.path.exists(ruta):
+        alt = ruta[:-4] + ".png"
+        if os.path.exists(alt):
+            ruta = alt
     im = svg_png(ruta, alto) if ruta.endswith(".svg") else png_alto(ruta, alto)
     if blanco:
         # tiñe conservando el alfa: sólo vale para marcas monocromas
@@ -191,15 +208,33 @@ def marcas(im, d, x, y, ancho, U, alto_logo=None, oscuro=False, cobertura=False,
 
     `y` es la línea del rótulo; los logos van debajo."""
     rot_col = "#B8B8B8" if oscuro else "#9A9A9A"
-    cap_rot = cap_rot or round(U * 0.0130)
+    def _cap_que_cabe(cap, ancho_max):
+        """Baja el cap del rótulo hasta que quepa. Con otra tipografía el
+        rótulo más largo se salía 33 px, y el motor tiene que aguantar
+        cualquier letra: es lo que promete el README."""
+        c = cap
+        while c > 7:
+            f = fuente("Bold", c)
+            if max(d.textlength(r, font=f) for r in ROTULOS.values()) <= ancho_max:
+                return c
+            c -= 1
+        return 7
+
+    cap_rot = _cap_que_cabe(cap_rot or round(U * 0.0130), ancho * 0.44)
     f_rot = fuente("Bold", cap_rot)
     alto_logo = alto_logo or round(U * 0.0463)
     y_logo = y + round(cap_rot * 2.28)
     med = {"bloques": [], "cap_rot": cap_rot, "alto_logo": alto_logo}
 
+    def _abs(r):
+        """Las listas del sistema son relativas, pero los motores pasan rutas
+        absolutas. Concatenar RAIZ a una absoluta daba «/RAIZ//Users/…», que
+        no existe, y el mensaje de error salía con la ruta descabezada."""
+        return r if os.path.isabs(r) else f"{RAIZ}/{r}"
+
     def pega(rutas, xl):
         for r in rutas:
-            lg = marca_alto(f"{RAIZ}/{r}", alto_logo, blanco=oscuro)
+            lg = marca_alto(_abs(r), alto_logo, blanco=oscuro)
             im.paste(lg, (xl, y_logo), lg)
             xl += lg.width + round(U * 0.037)
         return xl - round(U * 0.037)
@@ -238,7 +273,7 @@ def marcas(im, d, x, y, ancho, U, alto_logo=None, oscuro=False, cobertura=False,
         d.text((x, y3), ROTULOS["cobertura"], font=f_r3, fill=rot_col)
         b3 = d.textbbox((x, y3), ROTULOS["cobertura"], font=f_r3)
         h_m = round(alto_logo * 0.62)
-        lg = marca_alto(f"{RAIZ}/{LOGO_COBERTURA['oscuro' if oscuro else 'claro']}",
+        lg = marca_alto(_abs(LOGO_COBERTURA["oscuro" if oscuro else "claro"]),
                         h_m, blanco=False)
         x_m = b3[2] + round(U * 0.026)
         im.paste(lg, (x_m, y3 - round(h_m * 0.24)), lg)

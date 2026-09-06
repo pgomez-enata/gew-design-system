@@ -41,9 +41,10 @@ def ficheros(base):
     """Todo lo que hay en _salida/, menos el propio manifiesto."""
     out = []
     for p in sorted(glob.glob(f"{base}/**/*", recursive=True)):
-        # `_salida/publico/` es el paquete para GitHub: un derivado del
-        # derivado, que arma y borra `empaquetar.py`. No es producción.
-        if f"{os.sep}publico{os.sep}" in p:
+        # `publico/` y `demo/` son andamios: el paquete para GitHub y el
+        # sistema con activos de marcador. Los arman y los borran sus propios
+        # scripts; no son producción.
+        if any(f"{os.sep}{d}{os.sep}" in p for d in ("publico", "demo")):
             continue
         if os.path.isfile(p) and os.path.abspath(p) != os.path.abspath(DESTINO):
             out.append(p)

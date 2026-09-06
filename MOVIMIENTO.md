@@ -90,7 +90,7 @@ avisa por escrito que hay que evitar. Croma de marca por delante de distancia
 de catálogo.
 
 **Por qué no el azul de marca**: `#0262E5` es **exactamente** el color de
-Puyadores (ΔE 0) y su contraste contra el ink del nombre es 2,27:1, por debajo
+encuentro semanal (ΔE 0) y su contraste contra el ink del nombre es 2,27:1, por debajo
 del 3:1 que exige el propio sistema.
 
 **Sobre el carbón de GEW hace falta la variante aclarada.** Ningún color puede

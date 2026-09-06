@@ -121,7 +121,19 @@ def banda_marcas(im, d, x, y, ancho, alto, oscuro=True, con_cobertura=False,
     Devuelve las medidas para que la auditoría las pueda comprobar."""
     rot_col = "#B8B8B8" if oscuro else "#8A8A8A"
     tinta_col = BLANCO if oscuro else CARBON
-    cap_rot = cap_rot or max(9, round(alto * 0.098))
+    def _cap_que_cabe(cap, ancho_max):
+        """Baja el cap del rótulo hasta que quepa. Con otra tipografía el
+        rótulo más largo se salía 33 px, y el motor tiene que aguantar
+        cualquier letra: es lo que promete el README."""
+        c = cap
+        while c > 7:
+            f = fuente("Bold", c)
+            if max(d.textlength(r, font=f) for r in [b['rotulo'] for b in BLOQUES]) <= ancho_max:
+                return c
+            c -= 1
+        return 7
+
+    cap_rot = _cap_que_cabe(cap_rot or max(9, round(alto * 0.098)), ancho * 0.44)
     f_rot = fuente("Bold", cap_rot)
     med = {"bloques": [], "avisos": []}
 

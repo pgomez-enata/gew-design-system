@@ -10,6 +10,10 @@ de marca: todo sale de ahí.
 
 ---
 
+**Repo público**: <https://github.com/pgomez-enata/gew-design-system> — código
+MIT; la marca, la tipografía y las piezas producidas no viajan (ver
+`ACTIVOS.md`). Se rearma con `python3 empaquetar.py`, que **no publica**.
+
 ## El orden de los comandos
 
 Los cuatro pasos van en este orden. Saltarse el 2 deja piezas sin procedencia

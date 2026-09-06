@@ -42,6 +42,16 @@ hasta que la auditoría pasa** — no vale el informe del motor que la hizo.
 - **Las reglas se prueban en las dos direcciones**: que dejen de marcar lo que
   era falso, y que sigan marcando lo que era real.
 
+## Las capturas de `index.html`
+
+Son **piezas de demostración**: el motor de verdad corriendo, con un lockup de
+marcador, socios inventados, imágenes sintéticas y Poppins (SIL Open Font
+License) en lugar de VAG Rounded. Los datos son ficticios.
+
+No es maquillaje ni un mockup: es este código produciendo estas piezas. Y es
+exactamente lo que puedes hacer tú — poner tu marca en `logo/` y tu tipografía
+en `fuentes/` — así que sirve de prueba de que funciona.
+
 ## Lo que le falta
 
 Está en `LEEME.md` y en el `Estado` de `index.html`. Lo principal: el perfil

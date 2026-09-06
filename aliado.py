@@ -40,9 +40,22 @@ R = dict(margen=0.0667, franja=0.0222, logo=0.0780, rotulo=0.0250,
          nombre=0.0560, marca=0.2000, lema=0.0215, sello=0.1050)
 
 
+# Padrón de ejemplo, para cuando no hay muro: un clon no tiene el `gew.html`
+# publicado, y sin esto la revista y los kits reventaban con un
+# FileNotFoundError. Son nombres inventados, a propósito.
+PADRON_EJEMPLO = [(f"Organización {i:02d}", None) for i in range(1, 25)]
+
+
 def padron():
-    """Lee los 48 aliados del muro publicado. Devuelve [(nombre, ruta|None)]."""
-    h = open(f"{WEB}/gew.html", encoding="utf-8", errors="replace").read()
+    """Los aliados del muro publicado. Devuelve [(nombre, ruta|None)].
+
+    Si no hay muro —`GEW_PADRON` sin poner, o un clon recién bajado— devuelve
+    un padrón de ejemplo con nombres inventados, para que el sistema se pueda
+    probar entero sin datos de nadie."""
+    muro = f"{WEB}/gew.html"
+    if not os.path.exists(muro):
+        return list(PADRON_EJEMPLO)
+    h = open(muro, encoding="utf-8", errors="replace").read()
     i0 = h.index('<ul class="muro"')
     b = h[i0:h.index("</ul>", i0)]
     out = []

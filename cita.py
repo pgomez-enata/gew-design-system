@@ -178,8 +178,10 @@ def main():
     a = ap.parse_args()
 
     if a.demo:
-        F = ("/private/tmp/claude-503/-Users-piero-gomez-Desktop-claude-expririences/"
-             "0f0ece8c-23a3-4ed8-9c89-36bcdced60a4/scratchpad/fotos")
+        # Las fotos de muestra no viven en el repositorio: son de eventos reales, con
+        # caras de gente a la que nadie preguntó. `GEW_FOTOS` dice dónde están; sin esa
+        # variable se usan las de `_salida/demo/fotos`, que son sintéticas.
+        F = os.environ.get("GEW_FOTOS", os.path.join(RAIZ, "_salida", "demo", "fotos"))
         demo = [
             ("panel", "El primer cliente fue mi vecina. El segundo, su hermana. "
                       "Así empieza casi todo aquí.", "Nombre Apellido",

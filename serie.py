@@ -371,12 +371,12 @@ DEMO_AGENDA_DIA = ("Lunes *17* de noviembre", [
     {"hora": "9:00", "titulo": "Apertura · Semana Global de Emprendimiento",
      "lugar": "Cámara de Comercio · Santo Domingo"},
     {"hora": "11:00", "titulo": "Taller: valida tu idea en una semana",
-     "lugar": "UNAPEC · Aula magna"},
+     "lugar": "Universidad Demo · Aula magna"},
     {"hora": "14:00", "titulo": "Mesa: financiar sin banco",
-     "lugar": "Casa Enlata · Piantini"},
-    {"hora": "17:00", "titulo": "IA Lab en Finanzas", "lugar": "UNAPEC"},
-    {"hora": "19:00", "titulo": "Martes de Puyadores · edición especial",
-     "lugar": "Casa Enlata"},
+     "lugar": "Sala Demo · Ciudad"},
+    {"hora": "17:00", "titulo": "Taller de *finanzas*", "lugar": "Universidad Demo"},
+    {"hora": "19:00", "titulo": "Encuentro *semanal* · edición especial",
+     "lugar": "Sala Demo"},
 ])
 DEMO_AGENDA_SEMANA = ("La *semana* completa", [
     {"hora": "LUN 16", "titulo": "Apertura nacional", "lugar": "Santo Domingo"},
@@ -384,8 +384,8 @@ DEMO_AGENDA_SEMANA = ("La *semana* completa", [
     {"hora": "MIÉ 18", "titulo": "Financiamiento y capital", "lugar": "Todo el país"},
     {"hora": "JUE 19", "titulo": "Jóvenes y universidades", "lugar": "12 campus"},
     {"hora": "VIE 20", "titulo": "Mujeres que emprenden", "lugar": "Todo el país"},
-    {"hora": "SÁB 21", "titulo": "Pitch 4 Fun · final", "lugar": "Teatro UFHEC"},
-    {"hora": "DOM 22", "titulo": "Cierre y celebración", "lugar": "Casa Enlata"},
+    {"hora": "SÁB 21", "titulo": "Competencia Demo · final", "lugar": "Teatro Demo"},
+    {"hora": "DOM 22", "titulo": "Cierre y celebración", "lugar": "Sala Demo"},
 ])
 
 

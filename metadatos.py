@@ -167,7 +167,8 @@ def main():
 
     Image.MAX_IMAGE_PIXELS = None
     rutas = [p for p in sorted(glob.glob(f"{a.salida}/**/*.png", recursive=True))
-             if f"{os.sep}publico{os.sep}" not in p]
+             if not any(f"{os.sep}{d}{os.sep}" in p
+                        for d in ("publico", "demo"))]
     if not rutas:
         sys.exit("no hay nada que sellar en _salida/")
 
