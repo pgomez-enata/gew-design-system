@@ -78,7 +78,11 @@ def real():
     d = {}
     if hay_salida:
         d["piezas"] = len(png)
-        d["kits"] = len(glob.glob(f"{RAIZ}/_salida/aliados/*"))
+        # sólo se compara si el padrón es el real: con el de ejemplo son 24 y
+        # el index declara los 48 de verdad, que no es una mentira del index
+        from aliado import padron, PADRON_EJEMPLO
+        if padron() != list(PADRON_EJEMPLO):
+            d["kits"] = len(glob.glob(f"{RAIZ}/_salida/aliados/*"))
     d.update({
         "formatos": len(C.FORMATOS),
         "formatos de campaña": len(C.FMT_CAMPANA),

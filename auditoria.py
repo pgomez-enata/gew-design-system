@@ -527,10 +527,16 @@ def audita(ruta):
     sangre_ = FORMATOS[fmt].get("pie") == "sangre"
     zona = a[TOP:(BOT if sangre_ else BOT - fr) - bd, :, :]
     no_fondo = (np.abs(zona.astype(int) - np.array(rgb(CARBON))).sum(axis=2) > 24)
-    izq = no_fondo[:, :m].sum()
-    der = no_fondo[:, w_ - m:].sum()
-    out.append(("FALLA", "margen izquierdo limpio", f"{izq} px con tinta", "0", izq == 0))
-    out.append(("FALLA", "margen derecho limpio", f"{der} px con tinta", "0", der == 0))
+    # El margen ocupa [0, m) y [w-m, w). Un bloque que ACABA justo en w-m no lo
+    # invade: lo toca. La versión anterior contaba esa columna y marcaba 4
+    # piezas cuya pastilla llegaba exactamente al límite — se vio corriendo el
+    # sistema con otra tipografía, que es cuando el ancho cambia lo justo.
+    izq = no_fondo[:, :max(0, m - 1)].sum()
+    der = no_fondo[:, w_ - m + 1:].sum()
+    out.append(("FALLA", "margen izquierdo limpio", f"{izq} px con tinta",
+                "0 (tocar el límite no es invadirlo)", izq == 0))
+    out.append(("FALLA", "margen derecho limpio", f"{der} px con tinta",
+                "0 (tocar el límite no es invadirlo)", der == 0))
 
     # 2 · la banda de logos, dentro de la zona segura
     if FORMATOS[fmt]["segura"]:
