@@ -99,14 +99,29 @@ def placa(nivel, marca, firmado=False, ancho=1200):
     d.line([(x - round(ancho * 0.022), round(alto * 0.20)),
             (x - round(ancho * 0.022), round(alto * 0.78))],
            fill="#D5D5D5", width=2)
-    f_r = fuente("Bold", round(alto * 0.115))
-    d.text((x, round(alto * 0.24)), NIVELES[nivel]["rotulo"], font=f_r, fill=NARANJA)
-    f_n = fuente("Light", round(alto * 0.135))
-    d.text((x, round(alto * 0.46)), marca if firmado else PENDIENTE, font=f_n,
-           fill="#3C4043")
+    # los dos textos tienen que caber en lo que queda a la derecha del logo:
+    # «PATROCINADOR PRINCIPAL» con otra tipografía salía cortado por el borde
+    util = ancho - x - round(ancho * 0.045)
+
+    def cabe(txt, peso, cap):
+        while cap > 8:
+            f = fuente(peso, cap)
+            if d.textlength(txt, font=f) <= util:
+                return f
+            cap -= 1
+        return fuente(peso, 8)
+
+    rot = NIVELES[nivel]["rotulo"]
+    nom = marca if firmado else PENDIENTE
+    f_r = cabe(rot, "Bold", round(alto * 0.115))
+    d.text((x, round(alto * 0.24)), rot, font=f_r, fill=NARANJA)
+    f_n = cabe(nom, "Light", round(alto * 0.135))
+    d.text((x, round(alto * 0.46)), nom, font=f_n, fill="#3C4043")
     pulso(d, 0, alto - round(alto * 0.055), ancho, round(alto * 0.055))
+    der = max(d.textlength(rot, font=f_r), d.textlength(nom, font=f_n)) + x
     return im, {"pieza": "placa", "nivel": nivel, "px": [ancho, alto],
-                "firmado": firmado}
+                "firmado": firmado, "derecha": round(der),
+                "desborda": max(0, round(der) - (ancho - round(ancho * 0.045)))}
 
 
 def main():
