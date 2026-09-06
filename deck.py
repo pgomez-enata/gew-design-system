@@ -99,9 +99,13 @@ def portada(titulo, ponente="", cargo="", n=None):
         d.text((M, y + 40), ponente, font=fp, fill=NARANJA)
         if cargo:
             d.text((M, y + 100), cargo, font=fuente("Light", 32), fill=GRIS)
+    # el pie vive DENTRO del margen inferior a propósito, pero tiene que caber:
+    # con otra tipografía se pasaba 53 px del límite que la propia regla mide
     f2 = fuente("Light", 26)
-    d.text((M, H - M + 14), f"{TOK['campana']['fechas']} · {TOK['campana']['sitio']}",
-           font=f2, fill=GRIS)
+    txt_pie = f"{TOK['campana']['fechas']} · {TOK['campana']['sitio']}"
+    b_pie = d.textbbox((0, 0), txt_pie, font=f2)
+    tope = H - round(W * SEGURO * 0.55) - (b_pie[3] - b_pie[1])
+    d.text((M, min(H - M + 14, tope - 4)), txt_pie, font=f2, fill=GRIS)
     return im, {"tipo": "portada", "cap": cap, "lineas": len(ls)}
 
 

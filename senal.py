@@ -113,6 +113,17 @@ def _cabecera(im, d, s, w, dpi, U, oscuro=True):
     return y + px(0.55, dpi)
 
 
+def _cabe(d, texto, peso, cap, ancho):
+    """Baja el cap hasta que el texto quepa. El titular ya se ajustaba; el
+    detalle no, y con otra tipografía se salía por los dos lados del cartel."""
+    while cap > 8:
+        f = fuente(peso, cap)
+        if d.textlength(texto, font=f) <= ancho:
+            return f
+        cap -= 2
+    return fuente(peso, 8)
+
+
 def _titular(d, x, y, texto, ancho, dpi, dist_m, color=BLANCO, peso="Bold",
              alto_max=None):
     """Escribe el titular al mayor tamaño que quepa **en los dos ejes**, y
@@ -173,7 +184,7 @@ def pieza(tipo, texto, detalle="", sentido="derecha", salida=None):
         flecha(d, w // 2, y2 + px(5.0, dpi), util * 0.62, px(1.6, dpi),
                NARANJA, FLECHAS[sentido])
         if detalle:
-            f = fuente("Light", px(alto_para(dist) * 0.42, dpi))
+            f = _cabe(d, detalle, "Light", px(alto_para(dist) * 0.42, dpi), util)
             b = d.textbbox((0, 0), detalle, font=f)
             d.text(((w - (b[2] - b[0])) // 2 - b[0], y2 + px(9.0, dpi) - b[1]),
                    detalle, font=f, fill="#DCDCDC")
@@ -182,14 +193,14 @@ def pieza(tipo, texto, detalle="", sentido="derecha", salida=None):
         y2, alto_letra, n = _titular(d, s + m, y, texto, util, dpi, dist,
                                      alto_max=(h - s - m - y) * 0.62)
         if detalle:
-            f = fuente("Light", px(alto_para(dist) * 0.40, dpi))
+            f = _cabe(d, detalle, "Light", px(alto_para(dist) * 0.40, dpi), util)
             d.text((s + m, y2 + px(0.6, dpi)), detalle, font=f, fill=NARANJA)
     elif tipo == "registro":
         y += px(3.5, dpi)
         y2, alto_letra, n = _titular(d, s + m, y, texto or "REGISTRO", util,
                                      dpi, dist, alto_max=(h - s - m - y) * 0.55)
         if detalle:
-            f = fuente("Light", px(alto_para(dist) * 0.38, dpi))
+            f = _cabe(d, detalle, "Light", px(alto_para(dist) * 0.38, dpi), util)
             d.text((s + m, y2 + px(1.2, dpi)), detalle, font=f, fill="#DCDCDC")
     elif tipo == "wifi":
         y += px(0.8, dpi)
