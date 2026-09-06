@@ -1,0 +1,95 @@
+{
+  "_nota": "Textos de prensa. Los boilerplate son traducción del original de GEN, que va al lado en `_en` para poder cotejar. Las cifras están SIN RESOLVER: ver `_conflicto`.",
+
+  "_conflicto": {
+    "titulo": "⚠️ Las cifras de GEW no cuadran entre las fuentes oficiales de GEN",
+    "revisado": "5-sep-2026",
+    "fuentes": {
+      "hub genglobal.org/gew": {"paises": 200, "partners": 20000, "actividades": 40000, "personas": "10 millones"},
+      "plantilla de nota de prensa de GEN": {"paises": 200, "partners": 11000, "eventos": 75000, "personas": "10M+", "confianza": "94 %"},
+      "guia de National Hosts, lamina 4": {"paises": 200, "partners": 25000, "eventos": 40000, "personas": "10M+"},
+      "guia de Event Organizers, lamina 4": {"paises": 200, "partners": 25000, "eventos": 75000, "personas": "10M+"}
+    },
+    "que_hacer": "No se publica ninguna cifra hasta que Piero elija la fuente. Lo único que coincide en las cuatro es 200 países y 10 millones de personas.",
+    "boilerplate_gen": "Otro conflicto: la plantilla de prensa dice «$4M+ in funding» y «300 policymakers»; genglobal.org/news/press-kit dice «$5 million» y «950 policymakers»."
+  },
+
+  "boilerplate": {
+    "gew": {
+      "es": "Millones de personas en todo el mundo tienen las ideas, el talento y la ambición para construir algo mejor para ellas y para sus comunidades, pero nunca han visto el emprendimiento como un camino a su alcance. La Semana Global de Emprendimiento cambia eso. Esta campaña se acerca a las personas donde están y las conecta con las redes, las herramientas y el apoyo para dar ese primer paso, mostrando lo que es posible en sus propias comunidades. Más información en www.gew.co",
+      "_en": "Millions of people around the world have the ideas, talent, and ambition to build something better for themselves and their communities — but have never seen entrepreneurship as a path available to them. Global Entrepreneurship Week changes that. This campaign meets people where they are and connects them to the networks, tools, and support to take that first step — showing what's possible in their own communities. Learn more at www.gew.co",
+      "_origen": "plantilla oficial de nota de prensa de GEN (Google Doc, sep-2026)"
+    },
+    "gen": {
+      "es": "La Global Entrepreneurship Network opera en 200 países con la misión de hacer más fácil que cualquier persona, en cualquier lugar, inicie y haga crecer un negocio. Al impulsar una colaboración transfronteriza más profunda entre fundadores, inversionistas, responsables de política pública y líderes de ecosistema, GEN fortalece los ecosistemas emprendedores locales y nacionales. Más información en www.gew.co",
+      "_en": "The Global Entrepreneurship Network operates in 200 countries with a mission to make it easier for anyone, anywhere, to start and scale a business...",
+      "_origen": "plantilla oficial de nota de prensa de GEN",
+      "_nota": "Se recortaron a propósito las cifras del original (2,24 millones de emprendedores, $4M, 1.000 organizaciones, 300 responsables de política) porque entran en el conflicto de arriba."
+    },
+    "enlata": {
+      "es": "La Fundación Enlata es la organización anfitriona nacional de la Semana Global de Emprendimiento en República Dominicana. Construye ecosistema emprendedor dominicano a través de programas de formación, comunidad y articulación entre organizaciones.",
+      "_pendiente": "Piero tiene que aprobar este párrafo: es redacción de trabajo, no un boilerplate ya existente."
+    }
+  },
+
+  "kauffman": {
+    "obligacion": "La guía de National Hosts (lámina 54) obliga a reconocer a la Kauffman Foundation como Founding Partner de GEW y a los patrocinadores globales listados en genglobal.org/gew/partners, en: la home del sitio nacional, folletos, notas de prensa y materiales de más de una hoja A4.",
+    "⚠️_hallazgo": "En genglobal.org/gew/partners la Kauffman Foundation NO aparece etiquetada como Founding Partner: es un logo más dentro de una rejilla plana de ~59 logos, sin categorías. La obligación viene de la guía, no de la página. Antes de imprimir la frase conviene confirmarla con el contacto de marca de GEN.",
+    "frase_es": "La Semana Global de Emprendimiento es una iniciativa de la Global Entrepreneurship Network, cuyo socio fundador es la Kauffman Foundation."
+  },
+
+  "estructura_nota": [
+    "PARA PUBLICACIÓN INMEDIATA",
+    "Titular",
+    "Ciudad, país — fecha",
+    "Párrafo de apertura: quién y qué",
+    "Contexto: el tema de la campaña y su alcance",
+    "Dato local: la cifra dominicana",
+    "Qué va a pasar aquí: la campaña nacional",
+    "Cita de liderazgo",
+    "Cita de un emprendedor o aliado",
+    "Llamado a la acción",
+    "En cifras",
+    "Contacto de prensa",
+    "Sobre la Fundación Enlata",
+    "Sobre la Semana Global de Emprendimiento",
+    "Sobre la Global Entrepreneurship Network"
+  ],
+  "_estructura_origen": "plantilla oficial de GEN, «GEW 2026_Campaign Launch Announcement_For Partners_September 2026»",
+
+  "contacto_prensa": {
+    "nombre": "{{NOMBRE}}",
+    "cargo": "{{CARGO}}",
+    "organizacion": "Fundación Enlata",
+    "correo": "{{CORREO}}",
+    "telefono": "{{TELEFONO}}",
+    "_nota": "Se dejan sin rellenar a propósito: los datos de contacto los pone Piero al emitir."
+  },
+
+  "angulos": [
+    {"titular": "Millones de empleos están cambiando. [Ciudad] ayuda a la gente a escribir lo que viene.",
+     "dato": "92 millones de empleos serán desplazados por la IA en 2030, y se crearán 170 millones nuevos.",
+     "fuente_dato": "World Economic Forum, 2025 — citado por GEN en la guía de campaña",
+     "medios": "mesas nacionales, secciones de economía, prensa de recursos humanos"},
+    {"titular": "El 73 % de los emprendedores que faltan son mujeres. La Semana quiere cambiar eso.",
+     "dato": "Habría 34 millones más de emprendedores en los países de la OCDE si todos los grupos emprendieran al ritmo de los hombres de 30 a 49 años; las mujeres son el 73 % de esa brecha.",
+     "fuente_dato": "OCDE, 2023 — citado por GEN",
+     "medios": "prensa nacional, medios financieros, prensa de mujeres, política y desarrollo"},
+    {"titular": "El 66 % de los jóvenes ya construye algo. Casi ninguno lo llama negocio.",
+     "dato": "El 66 % de la generación Z y los millennials ha empezado o planea empezar algo por su cuenta; menos del 10 % de los jóvenes de la OCDE trabaja activamente en una empresa.",
+     "fuente_dato": "Intuit 2024 / OCDE 2023 — citados por GEN",
+     "medios": "medios juveniles, prensa universitaria, radio y TV de campus"},
+    {"titular": "1 de cada 4 jóvenes no estudia ni trabaja. Emprender es parte de la respuesta.",
+     "dato": "262 millones de jóvenes de 15 a 24 años no están empleados ni estudiando.",
+     "fuente_dato": "OIT, 2025 — citado por GEN",
+     "medios": "prensa de desarrollo, política pública, medios de comunicación de gobierno"},
+    {"titular": "La economía no se construye en salas de juntas. Se construye en tu calle.",
+     "dato": "Las mipymes son el 90 % de las empresas, el 60-70 % del empleo y el 50 % del PIB mundial.",
+     "fuente_dato": "Naciones Unidas — citado por GEN",
+     "medios": "prensa regional y local, radio comunitaria, hojas gratuitas, TV local"},
+    {"titular": "El compromiso laboral está en su punto más bajo desde 2020. Alguien está haciendo algo.",
+     "dato": "Solo el 20 % de los empleados en el mundo está comprometido con su trabajo, con un costo estimado de 10 billones de dólares en productividad perdida.",
+     "fuente_dato": "Gallup, State of the Global Workplace 2026 — citado por GEN",
+     "medios": "prensa económica, editorial de LinkedIn, medios de gestión y de carrera"}
+  ]
+}

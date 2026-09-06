@@ -1,0 +1,212 @@
+{
+ "_nota": "Los 39 segmentos del anillo del logo GEW·RD, medidos sobre logo/gew-rd-anillo.png recorriendo el radio medio (r=497 px del lienzo de 1174) cada 0,05°. Son la geometría real del logo, no una reconstrucción: de aquí sale el elemento distintivo del sistema.",
+ "_medido": "2026-09-05",
+ "_hallazgo": "Los 30 colores del anillo RD NO coinciden con los 30 hex de color.marca.rueda, que salieron del SVG global: 32 de 39 segmentos están a más de 24 de distancia (suma de canales) del hex más cercano. Para cualquier pieza que ponga un color al lado del anillo RD, manda esta lista, no la del SVG.",
+ "_regla": "⛔ Un ARCO de la rueda NO se puede usar: sería el logo recortado, y la regla del sistema es logos completos. La cinta desenrollada sí, porque es una banda recta y no se lee como logo incompleto.",
+ "radio_medio_px": 497,
+ "lienzo_px": [
+  1174,
+  1174
+ ],
+ "segmentos": 39,
+ "colores_unicos": 30,
+ "grados_de_color": 332.4,
+ "aire_blanco_grados": 27.6,
+ "lista": [
+  {
+   "desde": 0.15,
+   "grados": 7.25,
+   "hex": "#5B8B8D"
+  },
+  {
+   "desde": 7.4,
+   "grados": 7.9,
+   "hex": "#018BA4"
+  },
+  {
+   "desde": 15.45,
+   "grados": 5.55,
+   "hex": "#ABB7BB"
+  },
+  {
+   "desde": 33.6,
+   "grados": 1.7,
+   "hex": "#6E0147"
+  },
+  {
+   "desde": 35.45,
+   "grados": 7.3,
+   "hex": "#A1025F"
+  },
+  {
+   "desde": 42.85,
+   "grados": 25.8,
+   "hex": "#9AD8D8"
+  },
+  {
+   "desde": 70.5,
+   "grados": 12.6,
+   "hex": "#FCC0C8"
+  },
+  {
+   "desde": 83.2,
+   "grados": 7.3,
+   "hex": "#8668A8"
+  },
+  {
+   "desde": 90.6,
+   "grados": 2.65,
+   "hex": "#4C3D93"
+  },
+  {
+   "desde": 93.25,
+   "grados": 1.95,
+   "hex": "#324D96"
+  },
+  {
+   "desde": 95.2,
+   "grados": 2.45,
+   "hex": "#4B52A4"
+  },
+  {
+   "desde": 97.75,
+   "grados": 12.15,
+   "hex": "#868BC1"
+  },
+  {
+   "desde": 109.9,
+   "grados": 2.85,
+   "hex": "#4B52A4"
+  },
+  {
+   "desde": 118.25,
+   "grados": 2.1,
+   "hex": "#745471"
+  },
+  {
+   "desde": 120.5,
+   "grados": 2.15,
+   "hex": "#8668A8"
+  },
+  {
+   "desde": 122.75,
+   "grados": 5.55,
+   "hex": "#FBBED3"
+  },
+  {
+   "desde": 128.3,
+   "grados": 18.35,
+   "hex": "#F98EB2"
+  },
+  {
+   "desde": 146.65,
+   "grados": 4.65,
+   "hex": "#F8AB85"
+  },
+  {
+   "desde": 151.3,
+   "grados": 1.0,
+   "hex": "#F9E6A0"
+  },
+  {
+   "desde": 152.35,
+   "grados": 6.55,
+   "hex": "#DC7401"
+  },
+  {
+   "desde": 159.05,
+   "grados": 2.9,
+   "hex": "#FF8D00"
+  },
+  {
+   "desde": 162.1,
+   "grados": 10.2,
+   "hex": "#FF0700"
+  },
+  {
+   "desde": 172.3,
+   "grados": 8.65,
+   "hex": "#DC7401"
+  },
+  {
+   "desde": 180.95,
+   "grados": 5.55,
+   "hex": "#FF8D00"
+  },
+  {
+   "desde": 191.65,
+   "grados": 10.25,
+   "hex": "#F9E6A0"
+  },
+  {
+   "desde": 201.95,
+   "grados": 1.7,
+   "hex": "#C60600"
+  },
+  {
+   "desde": 203.75,
+   "grados": 21.85,
+   "hex": "#FF0700"
+  },
+  {
+   "desde": 225.75,
+   "grados": 7.65,
+   "hex": "#CAE60C"
+  },
+  {
+   "desde": 233.45,
+   "grados": 2.55,
+   "hex": "#C63F03"
+  },
+  {
+   "desde": 236.0,
+   "grados": 10.9,
+   "hex": "#F74636"
+  },
+  {
+   "desde": 246.9,
+   "grados": 5.3,
+   "hex": "#CF0001"
+  },
+  {
+   "desde": 252.35,
+   "grados": 9.6,
+   "hex": "#859498"
+  },
+  {
+   "desde": 261.95,
+   "grados": 12.7,
+   "hex": "#361502"
+  },
+  {
+   "desde": 274.75,
+   "grados": 9.7,
+   "hex": "#682404"
+  },
+  {
+   "desde": 284.6,
+   "grados": 32.75,
+   "hex": "#E0E0E0"
+  },
+  {
+   "desde": 317.45,
+   "grados": 11.55,
+   "hex": "#EFF717"
+  },
+  {
+   "desde": 329.0,
+   "grados": 6.65,
+   "hex": "#CAE60C"
+  },
+  {
+   "desde": 335.65,
+   "grados": 9.8,
+   "hex": "#EFF717"
+  },
+  {
+   "desde": 345.6,
+   "grados": 14.4,
+   "hex": "#E0E0E0"
+  }
+ ]
+}

@@ -1,0 +1,63 @@
+{
+  "_nota": "Titulares de la campaña nacional. Los de GEN están en inglés en la guía (láminas 20, 24, 28, 32, 36, 40). Las versiones en español son PROPUESTA de trabajo: el tono lo decide Piero.",
+  "_sintaxis": "En el titular, lo que va entre *asteriscos* se pinta en naranja.",
+  "audiencias": {
+    "publico": {
+      "nombre": "El público general",
+      "nombre_gen": "The General Public",
+      "descriptor": "No tiene relación con el emprendimiento, o es muy poca.",
+      "piezas": [
+        {"titular": "La economía no se construye\nen *salas de juntas*.", "remate": "Se construye en tu barrio.", "_gen": "The Economy Isn't Built In Boardrooms. / It's Built In Your Neighborhood."},
+        {"titular": "Detrás de cada *negocio*\nque te gusta,", "remate": "hay alguien que apostó por sí mismo.", "_gen": "Behind Every Local Business You Love, / There's a Problem Solver Who Bet On Themselves."},
+        {"titular": "Los *empleos* de nuestras\ncomunidades", "remate": "los crean nuestros vecinos.", "_gen": "The Jobs In Our Communities / Are Built By Our Neighbours."}
+      ]
+    },
+    "nextgen": {
+      "nombre": "El explorador de nueva generación",
+      "nombre_gen": "The Next Gen Explorer",
+      "descriptor": "Joven, curioso y todavía sin comprometerse. Busca lo suyo.",
+      "piezas": [
+        {"titular": "Tu *generación* está\nconstruyendo distinto.", "remate": "Sé parte de eso.", "_gen": "Your Generation Is Building Differently. / Be Part of It."},
+        {"titular": "¿*Qué* arreglarías\ntú?", "remate": "Cuéntanoslo esta semana.", "_gen": "What Would You Fix?"},
+        {"titular": "Esa *idea*\nque traes en la cabeza.", "remate": "Es hora de sacarla.", "_gen": "That Idea In Your Head?"}
+      ]
+    },
+    "ignorados": {
+      "nombre": "Los constructores ignorados",
+      "nombre_gen": "The Overlooked Builders",
+      "descriptor": "Tienen el empuje. Enfrentan barreras que otros no.",
+      "piezas": [
+        {"titular": "El mundo *necesita*\nlo que tú construyes", "remate": "y todavía no lo sabe.", "_gen": "The World Needs What You Build"},
+        {"titular": "Ves *soluciones*\nque otros pasan por alto.", "remate": "Esa es tu ventaja.", "_gen": "You See Solutions Others Miss."}
+      ]
+    },
+    "inquieto": {
+      "nombre": "El profesional inquieto",
+      "nombre_gen": "The Anxious Professional",
+      "descriptor": "Le preocupa que su trabajo cambie, sobre todo por la automatización. Busca una salida.",
+      "piezas": [
+        {"titular": "El mundo está *cambiando*.", "remate": "Sé parte del cambio.", "_gen": "The World Is Building Differently. / Be Part Of It."},
+        {"titular": "Si el trabajo cambia,\n*tú* puedes decidir cómo.", "remate": "Da el primer paso.", "_gen": "If Work is Changing, You Can Shape What Comes Next."},
+        {"titular": "La *disrupción*\nno es el final de la historia.", "remate": "Es donde empieza la tuya.", "_gen": "Disruption Is Not The End of the Story."}
+      ]
+    },
+    "estabilidad": {
+      "nombre": "Los que buscan estabilidad",
+      "nombre_gen": "The Stability Seekers",
+      "descriptor": "Tienen una idea. No están listos para apostarlo todo.",
+      "piezas": [
+        {"titular": "No hace falta *renunciar*\npara empezar.", "remate": "Valida una idea esta semana.", "_gen": "Make the ask small: validate one assumption this week."},
+        {"titular": "Un paso *pequeño*\nsigue siendo un paso.", "remate": "Empieza por el primero.", "_gen": "Promote low-risk pathways."}
+      ]
+    },
+    "problema": {
+      "nombre": "El dueño del problema",
+      "nombre_gen": "The Problem Owner",
+      "descriptor": "El padre recursivo. El cuidador agotado. Quien arregla su comunidad. Lo mueve un problema que vivió.",
+      "piezas": [
+        {"titular": "¿*Qué* arreglarías tú?", "remate": "Dinos qué te frustra.", "_gen": "Run a \"what would you fix?\" campaign as the primary GEW entry point."},
+        {"titular": "Ser quien *resuelve* problemas\nno es un tipo de personalidad.", "remate": "Es una decisión.", "_gen": "Being a Problem Solver Is Not a Personality Type. It's a Decision."}
+      ]
+    }
+  }
+}

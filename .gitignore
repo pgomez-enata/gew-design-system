@@ -1,0 +1,10 @@
+_salida/
+_cache/
+_pruebas/
+__pycache__/
+*.pyc
+.DS_Store
+
+# activos de terceros: ver ACTIVOS.md
+fuentes/
+logo/
