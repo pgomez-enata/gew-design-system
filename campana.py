@@ -228,8 +228,9 @@ def marcas(im, d, x, y, ancho, U, alto_logo=None, oscuro=False, cobertura=False,
 
     def _abs(r):
         """Las listas del sistema son relativas, pero los motores pasan rutas
-        absolutas. Concatenar RAIZ a una absoluta daba «/RAIZ//Users/…», que
-        no existe, y el mensaje de error salía con la ruta descabezada."""
+        absolutas. Concatenar la raíz a una ruta que ya empieza por barra
+        producía una ruta con doble barra en medio, que no existe, y el
+        mensaje de error salía con la ruta descabezada."""
         return r if os.path.isabs(r) else f"{RAIZ}/{r}"
 
     def pega(rutas, xl):
