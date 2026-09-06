@@ -1,5 +1,8 @@
 # Licencias
 
+El texto legal está en [LICENSE](LICENSE), que es el fichero que GitHub lee.
+Esto explica qué cubre y qué no.
+
 ## El código: MIT
 
 Copyright (c) 2026 Fundación Enlata
