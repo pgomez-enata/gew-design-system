@@ -88,17 +88,30 @@ def portada(titulo, ponente="", cargo="", n=None):
     lock = png_alto(activo("logo/gew-rd-lockup-blanco.png"), 118)
     im.paste(lock, (M, M - 24), lock)
     pulso(d, M, M + 118, W - M * 2, 34)
-    f, ls, cap = _encaja(d, titulo, "Bold", 118, W - M * 2, 3)
-    y = M + 230
+    # El titular se ajusta al ancho Y a lo que queda de alto: con tres líneas y
+    # el bloque de ponente debajo, el cargo se salía 53 px por abajo. Sólo se
+    # veía con otra tipografía, y sólo corriendo el clon — no el taller.
+    ms = round(W * SEGURO * 0.55)
+    alto_pie = 34
+    alto_ponente = (150 if cargo else 90) if ponente else 0
+    y0 = M + 230
+    disponible = (H - ms - alto_pie - alto_ponente) - y0
+    cap = 118
+    while cap >= 40:
+        f, ls, cap = _encaja(d, titulo, "Bold", cap, W - M * 2, 3)
+        if round(cap * 1.26) * len(ls) <= disponible:
+            break
+        cap -= 8
+    y = y0
     for l in ls:
         b = d.textbbox((M, y), l, font=f)
         d.text((M - (b[0] - M), y - (b[1] - y)), l, font=f, fill=BLANCO)
         y += round(cap * 1.26)
     if ponente:
         fp = fuente("Bold", 44)
-        d.text((M, y + 40), ponente, font=fp, fill=NARANJA)
+        d.text((M, y + 30), ponente, font=fp, fill=NARANJA)
         if cargo:
-            d.text((M, y + 100), cargo, font=fuente("Light", 32), fill=GRIS)
+            d.text((M, y + 90), cargo, font=fuente("Light", 32), fill=GRIS)
     # el pie vive DENTRO del margen inferior a propósito, pero tiene que caber:
     # con otra tipografía se pasaba 53 px del límite que la propia regla mide
     f2 = fuente("Light", 26)
