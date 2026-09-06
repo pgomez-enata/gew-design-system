@@ -79,14 +79,16 @@ def real():
            if not any(f"{os.sep}{d}{os.sep}" in p for d in ("publico", "demo"))]
     motores = [f for f in MOTORES if os.path.exists(f"{RAIZ}/{f}")]
     hay_salida = os.path.isdir(f"{RAIZ}/_salida")
+    # El padrón manda sobre DOS cifras, no una: con el de ejemplo hay 24 kits
+    # en vez de 48, y por tanto 144 piezas de aliado en vez de 288. Comparar el
+    # total contra lo que declara el index acusaba al index de una diferencia
+    # que es del padrón. Se vio en el clon, no aquí.
+    from aliado import padron, PADRON_EJEMPLO
+    padron_real = padron() != list(PADRON_EJEMPLO)
     d = {}
-    if hay_salida:
+    if hay_salida and padron_real:
         d["piezas"] = len(png)
-        # sólo se compara si el padrón es el real: con el de ejemplo son 24 y
-        # el index declara los 48 de verdad, que no es una mentira del index
-        from aliado import padron, PADRON_EJEMPLO
-        if padron() != list(PADRON_EJEMPLO):
-            d["kits"] = len(glob.glob(f"{RAIZ}/_salida/aliados/*"))
+        d["kits"] = len(glob.glob(f"{RAIZ}/_salida/aliados/*"))
     d.update({
         "formatos": len(C.FORMATOS),
         "formatos de campaña": len(C.FMT_CAMPANA),
@@ -165,7 +167,10 @@ def main():
           f"{len(re.findall(r'<img', crudo))} imágenes")
     if not hay_salida:
         print("  (no hay _salida/: las cifras que salen de las piezas no se "
-              "comprueban en este clon — construye antes)")
+              "comprueban en esta copia — construye antes)")
+    elif "piezas" not in R:
+        print("  (padrón de ejemplo: piezas y kits no se comparan, dependen de "
+              "los 48 aliados reales)")
     print(f"sistema v{TOK['meta']['version']} · " +
           " · ".join(f"{v} {k}" for k, v in R.items()))
     for x in fallos + avisos:
