@@ -28,7 +28,8 @@ from PIL import Image, ImageDraw
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 TOK = json.load(open(f"{RAIZ}/tokens/tokens.json", encoding="utf-8"))
 sys.path.insert(0, RAIZ)
-from campana import fuente, marca_alto, png_alto, pin, trocear, pulso  # noqa: E402
+from campana import (fuente, marca_alto, png_alto, pin, trocear, pulso,  # noqa: E402
+                     activo)
 
 CARBON = TOK["color"]["campana2026"]["carbon"]["hex"]
 NARANJA = TOK["color"]["campana2026"]["naranja"]["hex"]
@@ -246,7 +247,9 @@ def gran_formato(tipo, titular="Aquí los emprendedores *prosperan*",
     util = w - sang * 2 - m * 2
     ancho_logo = min(round(util * 0.86), LOGO_TINTA_PX)
     alto_logo = round(ancho_logo / 2.928)
-    lock = Image.open(f"{RAIZ}/logo/gew-rd-lockup-blanco.png").convert("RGBA")
+    # por `activo()`, no directo: si el logo no está se usa el de ejemplo/, y
+    # si tampoco, el mensaje dice qué falta en vez de soltar un traceback
+    lock = Image.open(activo("logo/gew-rd-lockup-blanco.png")).convert("RGBA")
     lock = lock.resize((ancho_logo, round(lock.height * ancho_logo / lock.width)),
                        Image.LANCZOS)
     dpi_logo = LOGO_TINTA_PX / (ancho_logo / dpi)

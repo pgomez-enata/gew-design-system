@@ -135,14 +135,19 @@ def main():
     elif not vs:
         avisos.append("  AVISO  el index no declara la versión del sistema")
 
+    # Lo que no se puede medir no es un fallo del index: es que aquí no se ha
+    # construido. `páginas` sale del informe de la revista, que sólo existe si
+    # se corrió — en un clon con otros motores corridos, `_salida/` existe pero
+    # ese informe no, y el auditor acusaba al index de mentir.
     sin_medir = set(marcadas) - set(R)
-    if sin_medir and hay_salida:
+    medibles = hay_salida and os.path.exists(f"{RAIZ}/_salida/revista/informe.json")
+    if sin_medir and medibles:
         for clave in sorted(sin_medir):
             fallos.append(f'  FALLA  data-real="{clave}" no lo mide el auditor: '
                           "o sobra en el HTML o falta en real()")
     elif sin_medir:
-        avisos.append(f"  AVISO  sin _salida/ no se pueden comprobar: "
-                      f"{', '.join(sorted(sin_medir))}")
+        avisos.append("  AVISO  no se pueden comprobar aquí (falta construir): "
+                      + ", ".join(sorted(sin_medir)))
 
     print(f"index {os.path.getsize(INDEX):,} bytes · "
           f"{len(re.findall(r'<h2', crudo))} secciones · "

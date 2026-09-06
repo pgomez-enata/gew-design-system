@@ -180,8 +180,8 @@ def main():
     if a.demo:
         # Las fotos de muestra no viven en el repositorio: son de eventos reales, con
         # caras de gente a la que nadie preguntó. `GEW_FOTOS` dice dónde están; sin esa
-        # variable se usan las de `_salida/demo/fotos`, que son sintéticas.
-        F = os.environ.get("GEW_FOTOS", os.path.join(RAIZ, "_salida", "demo", "fotos"))
+        # variable se usan las de `ejemplo/fotos`, que son sintéticas y sí viajan.
+        F = os.environ.get("GEW_FOTOS", os.path.join(RAIZ, "ejemplo", "fotos"))
         demo = [
             ("panel", "El primer cliente fue mi vecina. El segundo, su hermana. "
                       "Así empieza casi todo aquí.", "Nombre Apellido",
