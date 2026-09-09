@@ -58,20 +58,26 @@ FUENTE = {p: activo(f"fuentes/VAGRoundedStd{p}.ttf")
 # `escala` multiplica la retícula tipográfica: la retícula va en fracciones del
 # ancho, así que sin esto un 9:16 sale con todo diminuto y un 16:9 con todo enorme.
 # `segura` es la franja vertical donde la interfaz de la app no tapa nada.
+# Desde el 6-sep-2026 los números NO se escriben aquí: salen de
+# `tokens/video.json` a través de `video_tokens.banda()`, que es la fuente única
+# que comparten este motor, `video.py`, `movimiento_video.py` y las skills de
+# reels. Antes cada uno traía los suyos y no coincidían.
 #   ⚠️ Meta NO documenta zona segura para Stories ORGÁNICAS. La única cifra oficial
 #   es de las specs de ANUNCIOS (14 % arriba = 269 px, 35 % abajo = 672 px sobre
 #   1080×1920). El 35 % inferior reserva sitio para el CTA de un anuncio; en
 #   orgánico ahí sólo hay la barra de responder. Por eso hay dos perfiles.
+from video_tokens import banda as _banda  # noqa: E402
+
 FORMATOS = {
     "retrato":    {"px": (1080, 1350), "escala": 1.00, "segura": None,
                    "uso": "Instagram feed 4:5 · LinkedIn"},
-    "historia":   {"px": (1080, 1920), "escala": 1.45, "segura": (269, 1670),
+    "historia":   {"px": (1080, 1920), "escala": 1.45, "segura": _banda("vertical"),
                    "pie": "sangre", "reflow": True,
                    "uso": "Stories y estado de WhatsApp · margen orgánico"},
-    "historia-abierta": {"px": (1080, 1920), "escala": 1.55, "segura": (269, 1670),
+    "historia-abierta": {"px": (1080, 1920), "escala": 1.55, "segura": _banda("vertical"),
                    "pie": "sangre", "logos_sobre_carbon": True, "reflow": True,
                    "uso": "Stories sin banda blanca · logos en blanco sobre el carbón"},
-    "historia-ads": {"px": (1080, 1920), "escala": 1.45, "segura": (269, 1248),
+    "historia-ads": {"px": (1080, 1920), "escala": 1.45, "segura": _banda("vertical-ads"),
                    "reflow": True,
                    "uso": "Stories como anuncio · zona segura oficial de Meta"},
     "cuadrado":   {"px": (1080, 1080), "escala": 1.00, "segura": None,
@@ -90,7 +96,8 @@ FORMATOS = {
     # Las tres tienen ficha OFICIAL publicada, cosa que no pasa con las de
     # arriba: ver el bloque E de ESTANDARIZAR-salidas.md.
     "yt-portada": {"px": (2560, 1440), "escala": 1.00, "unidad": 1440,
-                   "segura": (508, 931), "segura_x": (507, 2053), "perfil": True,
+                   "segura": _banda("yt-portada"),
+                   "segura_x": (507, 2053), "perfil": True,
                    "uso": "Portada de canal de YouTube · sólo 1546×423 se ve en todos "
                           "los dispositivos (support.google.com/youtube/answer/2972003)"},
     "li-portada": {"px": (1512, 256), "escala": 1.00, "unidad": 256, "segura": None,
@@ -648,7 +655,10 @@ def main():
     ap.add_argument("--formato", choices=list(FORMATOS), default="retrato")
     ap.add_argument("--todas", action="store_true",
                     help="las 15 piezas en los formatos de campaña")
-    ap.add_argument("--salida", default=f"{RAIZ}/_salida")
+    # Su carpeta, como los otros 19 motores. Hasta el 6-sep-2026 escribía en
+    # la raíz de `_salida/` y era el único: 106 PNG sueltos entre las carpetas
+    # de los demás.
+    ap.add_argument("--salida", default=f"{RAIZ}/_salida/campana")
     a = ap.parse_args()
 
     hechas = []

@@ -35,7 +35,17 @@ MOTORES = ["campana.py", "actividad.py", "cita.py", "video.py", "serie.py",
            "aliado.py", "impreso.py", "perfil.py", "revista.py",
            "revista_reporte.py", "prensa.py", "movimiento.py",
            "senal.py", "deck.py", "correo.py", "movimiento_video.py",
-           "patrocinio.py", "postevento.py", "calendario.py"]
+           "patrocinio.py", "postevento.py", "calendario.py",
+           # Faltaba hasta el 6-sep-2026: produce las 5 piezas de
+           # `_salida/ia-media/` y tiene ramal propio en `auditoria.py`.
+           # El index decía 19 motores y había 20.
+           "logo_ia_media.py",
+           # El pulso en movimiento (6-sep-2026): 33 salidas por corrida y
+           # ramal `audita_pulso` con los 30 colores del anillo como regla.
+           "pulso_musica.py",
+           # La tarjeta de llamada a la acción (6-sep-2026): 16 salidas por
+           # corrida, dentro de la franja de anuncio y sin engagement bait.
+           "cta.py"]
 
 # Términos retirados: si aparecen, el index habla de algo que ya no es.
 RETIRADOS = {
@@ -52,6 +62,19 @@ RETIRADOS_CONTEXTO = [
      "Enlata es Partner (cerrado por Piero el 5-sep-2026)"),
     (r"(?:pieza|piezas|crédito|banda)\s+(?:social\s+)?(?:de[l]?\s+)?National Host",
      "las piezas ya no se atribuyen a un National Host"),
+    # ⚠️ Estas dos formas se colaron en LINEAMIENTOS.md y en
+    # REVISTA-investigacion.md, y llegaron al repo público: describían el pie de
+    # una pieza de campaña y la contraportada de la revista como «National Host
+    # + Partners». La regla existía y no las vio porque **sólo barría los .py**.
+    (r"National Host\s*(?:\+|y|·|/)\s*Partners",
+     "el pie lleva Partners: Enlata e IAvanza. No hay National Host"),
+    # ⚠️ 9-sep-2026: `MOVIMIENTO.md` publicaba «Banreservas está en
+    # negociación, no cerrado» en un repo público. La regla de no imprimir
+    # marcas sin acuerdo firmado se queda; el nombre de quien está negociando,
+    # no. Decisión de Piero: generalizar el ejemplo.
+    (r"(?:Banreservas|Caribbean Export|Popular|Claro|Altice)\s+(?:está|sigue|"
+     r"anda)\s+en\s+negociaci",
+     "el estado de una negociación no se publica; la regla va sin nombres"),
 ]
 # Términos que TIENEN que estar: si faltan, el index no cuenta lo que hay.
 EXIGIDOS = {
@@ -122,14 +145,21 @@ def main():
     # del reconocimiento y en el masthead de la revista: dos piezas que se
     # imprimen. Ahora se barre todo el código y el contenido, que es de donde
     # salen las piezas.
+    # ⚠️ Barría *.py y contenido/*.json, y NO los documentos. Dos .md que
+    # viajan al repo público describían piezas con banda de «National Host» y
+    # pasaron la auditoría en verde. Ahora entran los .md, con una diferencia:
+    # a ellos se les aplican sólo los patrones de CONTEXTO, porque el término a
+    # secas es legítimo en un documento que explica que quedó retirado.
     for otro in sorted(glob.glob(f"{RAIZ}/*.py")
-                       + glob.glob(f"{RAIZ}/contenido/*.json")):
+                       + glob.glob(f"{RAIZ}/contenido/*.json")
+                       + glob.glob(f"{RAIZ}/*.md")):
         if os.path.basename(otro) == "auditar_index.py":
             continue          # este fichero habla de la regla, no la incumple
         cont = open(otro, encoding="utf-8", errors="ignore").read()
-        for pat, por_que in RETIRADOS_CONTEXTO + [
-                (r"National Host(?!s)", "el papel de Enlata es Partner; "
-                 "«guía de National HostS» en plural sí se puede citar")]:
+        extra = [] if otro.endswith(".md") else [
+            (r"National Host(?!s)", "el papel de Enlata es Partner; "
+             "«guía de National HostS» en plural sí se puede citar")]
+        for pat, por_que in RETIRADOS_CONTEXTO + extra:
             for m in re.finditer(pat, cont):
                 fallos.append(f"  FALLA  {os.path.basename(otro)}: "
                               f"«{m.group(0)}» — {por_que}")

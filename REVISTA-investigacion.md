@@ -124,7 +124,7 @@ Competencia Demo; los ocho restantes son nuevos.
 | 1 | **Portada** | Lockup, el año, un titular y la foto o el collage |
 | 2 | **Retiración de portada** | Editorial breve o una cifra grande a toda página |
 | n-1 | **Retiración de contraportada** | El muro de los 48 aliados |
-| n | **Contraportada** | Lockup, lema, gew.co, banda de National Host y Partners, y los créditos que GEN obliga |
+| n | **Contraportada** | Lockup, lema, gew.co, banda de Partners, y los créditos que GEN obliga |
 
 ### Preliminares
 

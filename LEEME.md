@@ -37,6 +37,14 @@ la estaba mirando.
 
 ## Los motores
 
+**Vídeo**: [`VIDEO-que-falta.md`](VIDEO-que-falta.md) cataloga las piezas que
+faltan; [`VIDEO-ELEMENTOS.md`](VIDEO-ELEMENTOS.md) mira los elementos que se
+montan encima del metraje, en los cinco motores a la vez.
+
+**Cuál usar**: la respuesta está en [`USOS.md`](USOS.md) — nueve motores
+producen la misma medida de 1080×1350, así que el formato no decide nada.
+Decide de quién es el mensaje.
+
 | Motor | Qué saca |
 |---|---|
 | `campana.py` | Las piezas sociales de campaña. Es además la biblioteca que usan los demás: retícula, tipografía, logos, sello. |
@@ -52,7 +60,11 @@ la estaba mirando.
 | `senal.py` | Señalética de sede. **Declara a qué distancia se lee cada pieza.** |
 | `deck.py` | Deck para las charlas: 7 tipos de lámina, PNG y PDF. |
 | `correo.py` | Cuatro correos en HTML y texto plano, medidos contra el tope de Gmail. |
-| `movimiento_video.py` | Apertura, cuenta atrás y endcard **en movimiento**, con ffmpeg. |
+| `movimiento_video.py` | Apertura, cuenta atrás y endcard **en movimiento**, con el pulso sonando en `espectro`. |
+| `cta.py` | Tarjeta de llamada a la acción, 2,4 s. Dentro de la franja de anuncio y **sin engagement bait**. |
+| `animacion.py` | Curvas, entradas y **salidas**, con las duraciones en tiempos musicales. |
+| `zonas.py` | Zona segura en dos niveles: `organico` (criterio propio) y `anuncio` (14/35/6 de Meta). |
+| `pulso_musica.py` | El pulso **sonando**: 4 modos, bucle de 4,8 s a 100 BPM. MP4, ProRes con alfa, GIF y SVG. |
 | `patrocinio.py` | Anuncio y placa por nivel. ⛔ Sin acuerdo firmado, `{{PENDIENTE}}`. |
 | `postevento.py` | Gracias y los números, por actividad y del total. |
 | `calendario.py` | El `.ics` de la semana y de cada actividad. |
@@ -131,7 +143,11 @@ COBERTURA · COVERAGE  [iA MEDIA]      ← sólo en piezas de cobertura
 
 ## Qué sigue abierto
 
-Está en `tokens.json → meta.decisiones_pendientes` y en
+El estado del sistema, medido, está en
+[`AUDITORIA-06sep.md`](AUDITORIA-06sep.md): diez hallazgos con su coste, de
+los que ninguno está arreglado todavía.
+
+Lo demás está en `tokens.json → meta.decisiones_pendientes` y en
 `ESTANDARIZAR-salidas.md → Parte 5`. Lo que bloquea trabajo hoy:
 
 1. **El perfil ICC de la imprenta.** Sin él, la revista no se puede preparar

@@ -25,27 +25,43 @@ from PIL import Image, ImageDraw
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 TOK = json.load(open(f"{RAIZ}/tokens/tokens.json", encoding="utf-8"))
 sys.path.insert(0, RAIZ)
-from campana import (fuente, marca_alto, png_alto, pin, pulso, marcas)  # noqa: E402
+from video_tokens import zona as _zona  # noqa: E402
+from campana import (PARTNERS, fuente, marca_alto, png_alto, pin,  # noqa: E402
+                     pulso, marcas)
+import pulso_musica as PM  # noqa: E402
+
+# El papel de cada pieza, y de ahí el modo del pulso (regla cerrada el
+# 6-sep-2026). El frame y el lower van ENCIMA de alguien hablando: `latido`,
+# que es fondo. El endcard va solo, después de la voz: `espectro`.
+PAPEL = {"frame": "voz", "guias": "voz", "lower": "voz", "endcard": "solo"}
 
 CARBON = TOK["color"]["campana2026"]["carbon"]["hex"]
 NARANJA = TOK["color"]["campana2026"]["naranja"]["hex"]
 BLANCO = "#FFFFFF"
 TINTA = TOK["color"]["marca"]["carbon-wordmark"]["hex"]
 
-# `ui` marca las zonas que la interfaz de la app tapa o usa.
+# `ui` marca las zonas que la interfaz de la app tapa o usa. Los números salen
+# de `tokens/video.json` desde el 6-sep-2026: antes estaban escritos aquí y
+# `movimiento_video.py` usaba otros distintos para el mismo formato (49 px de
+# respaldo contra los 60 de este fichero).
 #   vertical: arriba y abajo salen de la zona segura de Stories que ya usa el
 #   sistema; la columna derecha son los botones de Reels — NO está documentada
 #   por Meta con cifras, es una reserva prudente y va declarada como tal.
 FORMATOS = {
     "vertical":   {"px": (1080, 1920), "unidad": 1180,
-                   "ui": {"arriba": 269, "abajo": 250, "derecha": 250},
+                   "ui": _zona("vertical"),
                    "uso": "Reels · Shorts · Stories"},
     "horizontal": {"px": (1920, 1080), "unidad": 1180,
-                   "ui": {"arriba": 60, "abajo": 120, "derecha": 0},
+                   "ui": _zona("horizontal"),
                    "uso": "YouTube · web · pantalla de evento"},
     "cuadrado":   {"px": (1080, 1080), "unidad": 1080,
-                   "ui": {"arriba": 60, "abajo": 120, "derecha": 0},
+                   "ui": _zona("cuadrado"),
                    "uso": "feed de LinkedIn y Facebook"},
+    # 4:5 · el que más superficie ocupa en el feed de un móvil. La reserva de
+    # Stories NO se traslada aquí: esto es feed, no pantalla completa.
+    "retrato":    {"px": (1080, 1350), "unidad": 1140,
+                   "ui": _zona("retrato"),
+                   "uso": "feed de Instagram, Facebook y LinkedIn"},
 }
 
 R = dict(margen=0.0560, franja=0.0180, logo=0.0620, sub=0.1150,
@@ -59,8 +75,14 @@ def hoja(fmt):
     return w, h, u, {k: round(v * u) for k, v in R.items()}
 
 
-def frame(fmt="vertical", subtitulos=True, guias=False, salida=None):
-    """Overlay con alfa. Con guias=True marca lo que tapa la interfaz."""
+def frame(fmt="vertical", subtitulos=True, guias=False, salida=None,
+          pu=None, f=0):
+    """Overlay con alfa. Con guias=True marca lo que tapa la interfaz.
+
+    Con `pu` —la pareja (energía, cabezas, rejilla) de `pulso_musica`— el pulso
+    va SONANDO en el fotograma `f`. Sin `pu` sale quieto, que es lo que necesita
+    el PNG de siempre: los dos caminos usan la misma composición, así que el
+    overlay animado y el fijo no se pueden separar."""
     w, h, U, g = hoja(fmt)
     m, fr = g["margen"], g["franja"]
     ui = FORMATOS[fmt]["ui"]
@@ -78,7 +100,11 @@ def frame(fmt="vertical", subtitulos=True, guias=False, salida=None):
 
     y_p = ui["arriba"] + m + lock.height + round(U * 0.024)
     a_p = round(U * 0.028)
-    pulso(d, m, y_p, w - m * 2, a_p)
+    if pu:
+        E, H, R = pu
+        PM.dibuja(d, m, y_p, w - m * 2, a_p, E, H, f % R["frames"])
+    else:
+        pulso(d, m, y_p, w - m * 2, a_p)
     med["pulso"] = [m, y_p, w - m, y_p + a_p]
 
     # zona de subtítulos: un velo suave para que el texto quemado se lea siempre
@@ -141,13 +167,19 @@ def lower(nombre, cargo="", fmt="vertical", salida=None):
     return im, {"tipo": "lower", "formato": fmt, "px": [w, h], "caja": [bw, bh]}
 
 
-def endcard(fmt="vertical", host=None, socios=None, salida=None):
+def endcard(fmt="vertical", host=None, socios=None, salida=None,
+            pu=None, f=0):
     """Tarjeta final, opaca."""
     w, h, U, g = hoja(fmt)
     m, fr = g["margen"], g["franja"]
     ui = FORMATOS[fmt]["ui"]
-    host = host or f"{RAIZ}/logo/socios/enlata-wordmark.svg"
-    socios = socios if socios is not None else [f"{RAIZ}/logo/socios/iavanza-lockup.svg"]
+    # Enlata e IAvanza son los DOS Partners permanentes, y la lista canónica es
+    # `PARTNERS`. Hasta el 6-sep-2026 esto era «host + socios» con las rutas
+    # escritas a mano: ese reparto venía del rótulo de anfitrión que se retiró
+    # del sistema, y sin `activo()` un clon sin `logo/` reventaba. `host` y
+    # `socios` siguen aceptándose para componer con el organizador de una
+    # actividad concreta.
+    partners = ([host] if host else list(PARTNERS)) + list(socios or [])
     im = Image.new("RGB", (w, h), CARBON)
     d = ImageDraw.Draw(im)
     med = {"tipo": "endcard", "formato": fmt, "px": [w, h]}
@@ -185,12 +217,17 @@ def endcard(fmt="vertical", host=None, socios=None, salida=None):
            TOK["campana"]["sitio"], font=f_lema, fill=NARANJA)
     # el pulso, de remate sobre la banda
     a_p = round(U * 0.022)
-    pulso(d, m, h - fr - bd - round(U * 0.026) - a_p, w - m * 2, a_p)
+    y_pl = h - fr - bd - round(U * 0.026) - a_p
+    if pu:
+        E, H, R = pu
+        PM.dibuja(d, m, y_pl, w - m * 2, a_p, E, H, f % R["frames"])
+    else:
+        pulso(d, m, y_pl, w - m * 2, a_p)
 
     # los tres bloques. El endcard es pieza de cobertura: lleva IA Media.
     med_m = marcas(im, d, m, h - fr - bd + round(U * 0.0230), w - m * 2, U,
                    alto_logo=g["endlogos"], cobertura=True,
-                   partners=[host] + list(socios))
+                   partners=partners)
     med["marcas"] = med_m
     med["marcas_desborda"] = med_m["desborda"]
 
@@ -200,8 +237,41 @@ def endcard(fmt="vertical", host=None, socios=None, salida=None):
     return im, med
 
 
+def anima(tipo, fmt, salida, dias=None):
+    """El overlay en movimiento, en bucle exacto de 4,8 s.
+
+    El `frame` sale en **ProRes 4444 con alfa**: se pone encima del crudo en
+    cualquier montador y se repite en bucle. No en WebM/VP9 — ese contenedor
+    se etiqueta con alfa y guarda el flujo sin él. El `endcard` es opaco, así
+    que va en MP4 como el resto del kit.
+
+    Los fotogramas se generan con un generador, no en una lista: 144 imágenes
+    de 1080x1920 en RGBA son 1,2 GB en memoria."""
+    pu = PM.bucle(PM.PAPELES[PAPEL[tipo]])
+    R = pu[2]
+    w, h = FORMATOS[fmt]["px"]
+    alfa = tipo != "endcard"
+    if tipo == "endcard":
+        ims = (endcard(fmt, pu=pu, f=i)[0].convert("RGB")
+               for i in range(R["frames"]))
+    else:
+        ims = (frame(fmt, pu=pu, f=i)[0] for i in range(R["frames"]))
+    m = PM.monta_seq(ims, w, h, salida, R["fps"], alfa=alfa)
+    if alfa:
+        m.update(PM.alfa_real(salida))
+    if "error" not in m:
+        n = m.get("frames") or R["frames"]
+        m["mueve"] = PM.se_mueve(salida, round(n * 0.20), round(n * 0.45))
+    m["modo"] = PM.PAPELES[PAPEL[tipo]]
+    m["papel"] = PAPEL[tipo]
+    return m
+
+
 def main():
     ap = argparse.ArgumentParser(description="Frames y endcards de vídeo GEW · RD")
+    ap.add_argument("--animado", action="store_true",
+                    help="además de los PNG, el overlay EN MOVIMIENTO: "
+                         "frame en ProRes 4444 con alfa, endcard en MP4")
     ap.add_argument("--tipo", choices=["frame", "guias", "lower", "endcard"],
                     default="frame")
     ap.add_argument("--formato", choices=list(FORMATOS), default="vertical")
@@ -234,6 +304,46 @@ def main():
             print(f"  HOLGURA NEGATIVA {hh} px — {os.path.basename(r)}")
         for r, _ in hechas:
             print(r)
+        if a.animado:
+            print(f'\n{"overlay en movimiento":24} {"px":>10} {"frames":>7} '
+                  f'{"pix_fmt":>14} {"fondo α":>8} {"se mueve":>9} {"modo":>10} {"MB":>6}')
+            fallos, hechos_v = [], 0
+            esp_v = 2 * len(FORMATOS)
+            for tipo in ("frame", "endcard"):
+                ext = "mov" if tipo != "endcard" else "mp4"
+                for fmt in FORMATOS:
+                    ruta = f"{a.salida}-mov/{tipo}--{fmt}.{ext}"
+                    mm = anima(tipo, fmt, ruta)
+                    if "error" in mm:
+                        fallos.append(f'  FALLA {tipo}/{fmt}: {mm["error"]}')
+                        continue
+                    hechos_v += 1
+                    print(f'  {tipo+"/"+fmt:22} {mm["px"]:>10} {mm["frames"]:7} '
+                          f'{mm["pix_fmt"]:>14} '
+                          f'{str(mm.get("fondo_alfa", "—")):>8} '
+                          f'{str(mm.get("mueve")):>9} '
+                          f'{mm["modo"]:>10} {mm["bytes"]/1e6:6.2f}')
+                    esp_px = "x".join(map(str, FORMATOS[fmt]["px"]))
+                    if mm["px"] != esp_px:
+                        fallos.append(f'  FALLA {tipo}/{fmt}: lienzo {mm["px"]}')
+                    if mm["frames"] != 144:
+                        fallos.append(f'  FALLA {tipo}/{fmt}: {mm["frames"]} '
+                                      f'fotogramas y el bucle son 144')
+                    if not mm.get("mueve"):
+                        fallos.append(f'  FALLA {tipo}/{fmt}: el pulso no '
+                                      f'cambia un solo píxel entre dos '
+                                      f'fotogramas — está quieto')
+                    if tipo != "endcard" and mm.get("fondo_alfa") != 0:
+                        fallos.append(f'  FALLA {tipo}/{fmt}: el fondo del '
+                                      f'fotograma decodificado tiene alfa '
+                                      f'{mm.get("fondo_alfa")} y debe ser 0')
+            print(f"\nproducidos {hechos_v} de {esp_v} overlays en movimiento")
+            if hechos_v != esp_v:
+                fallos.append(f"  FALLA el lote: {hechos_v} de {esp_v}")
+            for x in fallos:
+                print(x)
+            if fallos:
+                sys.exit(f"{len(fallos)} fallo(s) en el overlay animado")
         if malas:
             sys.exit(f"{len(malas)} pieza(s) con el bloque fuera de sitio")
     else:

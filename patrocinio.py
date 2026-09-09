@@ -32,7 +32,11 @@ NARANJA = TOK["color"]["campana2026"]["naranja"]["hex"]
 BLANCO, GRIS = "#FFFFFF", "#B8BCC0"
 PENDIENTE = "{{PENDIENTE}}"
 
-NIVELES = {
+# Los niveles salen de `contenido/patrocinio.json`, que se edita sin tocar
+# código — el docstring lo prometía desde el 5-sep y el fichero no existía: los
+# valores estaban aquí. Si el JSON falta, se cae a estos, para que un clon
+# recién bajado arranque igual.
+_POR_DEFECTO = {
     "principal":   {"rotulo": "PATROCINADOR PRINCIPAL", "escala": 1.00,
                     "piezas": ["anuncio", "placa", "certificado"]},
     "patrocinador": {"rotulo": "PATROCINADOR", "escala": 0.74,
@@ -40,6 +44,11 @@ NIVELES = {
     "colaborador": {"rotulo": "COLABORA", "escala": 0.52,
                     "piezas": ["placa", "certificado"]},
 }
+_JSON = f"{RAIZ}/contenido/patrocinio.json"
+try:
+    NIVELES = json.load(open(_JSON, encoding="utf-8"))["niveles"]
+except (OSError, KeyError, ValueError):
+    NIVELES = _POR_DEFECTO
 
 
 def anuncio(nivel, marca, logo=None, fmt="retrato", firmado=False):

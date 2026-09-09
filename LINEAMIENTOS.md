@@ -119,7 +119,7 @@ no aparece.
 
 | Pieza | Fondo | Foto | Recorte | Logos del pie |
 |---|---|---|---|---|
-| **Campaña · social B2C** | carbón sólido | ninguna | — | National Host + Partners |
+| **Campaña · social B2C** | carbón sólido | ninguna | — | Partners (Enlata + IAvanza) |
 | **Actividad · flyer A** | claro | 3 retratos | círculo | badge GEW + logo propio + banda de partners |
 | **Actividad · flyer B** | foto a sangre | 1 | rectangular, sangre completa | badge GEW + logo propio |
 | **Actividad · flyer C** | partido | 1 | rectangular, tercio derecho | badge GEW + logo propio |
@@ -132,9 +132,9 @@ goals». Sus entradas son **foto, nombre, cargo y cita**, y lleva unas comillas
 grandes arriba a la izquierda.
 
 ⚠️ Diferencia importante entre las dos guías: las plantillas sociales de la guía
-de **Event Organizers no llevan banda de National Host / Partners**, sólo
-`www.gew.co` al pie. Esa banda es exclusiva de las piezas de la **campaña
-nacional**. Es la misma frontera de los dos papeles.
+de **Event Organizers no llevan banda de Partners**, sólo `www.gew.co` al pie.
+Esa banda es exclusiva de las piezas de la **campaña nacional**. Es la misma
+frontera de los dos papeles.
 
 ---
 

@@ -22,7 +22,8 @@ from PIL import Image, ImageDraw, ImageOps
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 TOK = json.load(open(f"{RAIZ}/tokens/tokens.json", encoding="utf-8"))
 sys.path.insert(0, RAIZ)
-from campana import fuente, marca_alto, png_alto, sello, pulso  # noqa: E402
+from campana import (fuente, marca_alto, png_alto, sello, pulso,  # noqa: E402
+                     PARTNERS, activo)
 
 CARBON = TOK["color"]["campana2026"]["carbon"]["hex"]
 NARANJA = TOK["color"]["campana2026"]["naranja"]["hex"]
@@ -73,7 +74,6 @@ def cita(texto, nombre, cargo, foto=None, variante="panel", fmt="retrato",
     seg = FORMATOS[fmt].get("segura")
     TOP, BOT = seg if seg else (0, h)
     med = {"variante": variante, "formato": fmt, "px": [w, h], "zona": [TOP, BOT]}
-    organizador = organizador or f"{RAIZ}/logo/socios/enlata-wordmark.svg"
 
     im = Image.new("RGB", (w, h), CARBON)
     d = ImageDraw.Draw(im)
@@ -148,15 +148,37 @@ def cita(texto, nombre, cargo, foto=None, variante="panel", fmt="retrato",
                cargo, font=f_car, fill=GRIS)
     med["holgura_cita"] = y_nom - y
 
-    # ── pie: sello GEW + logo del organizador ─────────────────────────────
+    # ── pie: sello GEW + los dos Partners ─────────────────────────────────
     # Por debajo de 70 px de alto el badge completo no se lee: sus cuatro líneas
     # de texto desaparecen. Ahí va el anillo con el reconocimiento en tipografía,
     # que es la misma regla que sigue enlata.do/gew.
-    _, med["sello"] = sello(im, d, m, y_pie + (alto_pie - g["badge"]) // 2,
-                            g["badge"], U)
-    lg = marca_alto(organizador, round(g["badge"] * 0.86))
-    im.paste(lg, (w - m - lg.width, y_pie + (alto_pie - lg.height) // 2), lg)
-    med["pie_logo_ancho"] = lg.width
+    an_sello, med["sello"] = sello(im, d, m, y_pie + (alto_pie - g["badge"]) // 2,
+                                   g["badge"], U)
+    # Hasta el 6-sep-2026 aquí iba UN logo, y por defecto era Enlata en el papel
+    # de «organizador». Enlata e IAvanza son los DOS Partners permanentes del
+    # movimiento: van los dos, siempre. `--organizador` añade un tercero, el de
+    # quien organiza esa actividad concreta, que es otro papel.
+    logos = [activo(r) for r in PARTNERS]
+    if organizador:
+        logos.append(organizador)
+    sep = round(U * 0.026)
+    hueco = (w - m) - (m + an_sello + sep * 2)
+    alto_lg = round(g["badge"] * 0.86)
+    while alto_lg > 12:                       # baja hasta que los tres quepan
+        piezas = [marca_alto(r, alto_lg) for r in logos]
+        total = sum(p.width for p in piezas) + sep * (len(piezas) - 1)
+        if total <= hueco:
+            break
+        alto_lg -= 2
+    x = w - m
+    for pz in reversed(piezas):               # de derecha a izquierda
+        x -= pz.width
+        im.paste(pz, (x, y_pie + (alto_pie - pz.height) // 2), pz)
+        x -= sep
+    med["pie_logos"] = {"n": len(piezas), "alto": alto_lg,
+                        "ancho_total": total, "hueco": hueco,
+                        "izquierda": x + sep,
+                        "libre": (x + sep) - (m + an_sello)}
 
     if salida:
         os.makedirs(os.path.dirname(salida), exist_ok=True)

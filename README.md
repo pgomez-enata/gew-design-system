@@ -7,14 +7,14 @@ República Dominicana; IA Media firma la cobertura.
 **→ [Ver el sistema en funcionamiento](https://pgomez-enata.github.io/gew-design-system/)**
 · 20 secciones con las piezas que produce, la retícula, el pulso y las reglas.
 
-Sistema v1.2.0 · 76 ficheros · código MIT, marca no — ver [LICENCIAS.md](LICENCIAS.md)
+Sistema v1.2.0 · 87 ficheros · código MIT, marca no — ver [LICENCIAS.md](LICENCIAS.md)
 
 ## Qué hace
 
-19 motores producen piezas sociales, flyers de actividad, citas,
+22 motores producen piezas sociales, flyers de actividad, citas,
 frames y endcards de vídeo, carruseles y cuentas atrás, kits para 48 aliados,
 credenciales y roll-ups, piezas de perfil y una revista de recap de 32 páginas
-con 23 tipos de página. 8 herramientas comprueban que lo que
+con 23 tipos de página. 10 herramientas comprueban que lo que
 sale está bien.
 
 Todo sale de **`tokens/tokens.json`**, que es la fuente de verdad, y cada valor

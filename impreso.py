@@ -28,8 +28,8 @@ from PIL import Image, ImageDraw
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 TOK = json.load(open(f"{RAIZ}/tokens/tokens.json", encoding="utf-8"))
 sys.path.insert(0, RAIZ)
-from campana import (fuente, marca_alto, png_alto, pin, trocear, pulso,  # noqa: E402
-                     activo)
+from campana import (fuente, marca_alto, marcas as banda_marcas,  # noqa: E402
+                     png_alto, pin, trocear, pulso, activo, PARTNERS)
 
 CARBON = TOK["color"]["campana2026"]["carbon"]["hex"]
 NARANJA = TOK["color"]["campana2026"]["naranja"]["hex"]
@@ -122,14 +122,29 @@ def credencial(nombre, org="", rol="", con_marcas=False, salida=None):
                texto, font=f2, fill=col)
         y += cap_ + round(U * 0.030)
 
-    # pie
+    # pie: los dos Partners, las fechas y el pulso. Los logos van agrupados con
+    # el pie y no flotando en el centro: la credencial tiene 566 px de aire ahí
+    # y sueltos se leerían como parte del bloque del nombre.
+    alto_l = round(U * 0.055)
+    piezas = [marca_alto(activo(r), alto_l) for r in PARTNERS]
+    sep = round(U * 0.055)
+    total = sum(pz.width for pz in piezas) + sep * (len(piezas) - 1)
+    base_l = h - sang - round(U * 0.150)
+    x = (w - total) // 2
+    for pz in piezas:
+        im.paste(pz, (x, base_l - pz.height), pz)
+        x += pz.width + sep
+    med["partners"] = {"n": len(piezas), "alto": alto_l, "ancho": total,
+                       "base": base_l, "libre_arriba": (base_l - alto_l) - y}
+
     f3 = fuente("Light", round(U * 0.036))
     t = TOK["campana"]["fechas"]
     bb = d.textbbox((0, 0), t, font=f3)
-    d.text(((w - (bb[2] - bb[0])) // 2 - bb[0], h - sang - round(U * 0.105) - bb[1]),
-           t, font=f3, fill=TINTA)
+    y_f = h - sang - round(U * 0.105)
+    d.text(((w - (bb[2] - bb[0])) // 2 - bb[0], y_f - bb[1]), t, font=f3, fill=TINTA)
+    med["partners"]["libre_abajo"] = y_f - base_l
     pulso(d, 0, h - sang - round(U * 0.030), w, round(U * 0.030))   # credencial: pie
-    med["holgura"] = (h - sang - round(U * 0.115)) - y
+    med["holgura"] = (base_l - alto_l - round(U * 0.030)) - y
 
     if con_marcas:
         marcas(d, w, h, sang, U)
@@ -253,6 +268,23 @@ def certificado(nombre, texto=None, tipo="participación", con_marcas=False,
                cargo, font=f_fi, fill=GRIS)
     med["holgura"] = y_f - round(U * 0.030) - y
 
+    # Los dos Partners bajo las firmas. Un certificado dice quién lo emite con
+    # el cargo en texto —«Presidente · Fundación Enlata»— y hasta el
+    # 6-sep-2026 no llevaba ni un logo.
+    alto_l = round(U * 0.030)
+    piezas = [marca_alto(activo(r), alto_l) for r in PARTNERS]
+    sep = round(U * 0.040)
+    total = sum(pz.width for pz in piezas) + sep * (len(piezas) - 1)
+    y_lg = h - sang - round(U * 0.041)   # repartido: pegados a la firma se leían como parte de ella
+    x = (w - total) // 2
+    for pz in piezas:
+        im.paste(pz, (x, y_lg - pz.height // 2), pz)
+        x += pz.width + sep
+    med["partners"] = {"n": len(piezas), "alto": alto_l, "ancho": total,
+                       "base": y_lg + alto_l // 2,
+                       "libre_abajo": (h - sang) - (y_lg + alto_l // 2),
+                       "libre_arriba": (y_lg - alto_l // 2) - (y_f + round(U * 0.046))}
+
     if con_marcas:
         marcas(d, w, h, sang, U)
     if salida:
@@ -334,18 +366,24 @@ def gran_formato(tipo, titular="Aquí los emprendedores *prosperan*",
         d.text(((w - (bb[2] - bb[0])) // 2 - bb[0], y - bb[1]), texto, font=f_f, fill=col)
         y += round(U * 0.062) + round(U * 0.028)
 
-    # banda de logos abajo
+    # banda de marcas abajo: los dos Partners permanentes con su rótulo y el
+    # hueco de patrocinadores, igual que en las piezas de pantalla. Hasta el
+    # 6-sep-2026 aquí iban los dos logos centrados, sin rótulo y con la ruta
+    # escrita a mano —en un clon sin `logo/` reventaba en vez de caer a
+    # `ejemplo/`, que es lo que promete `activo()`.
     bd = round(U * 0.105)
     base = h - sang - round(U * 0.030)
     d.rectangle([0, base - bd, w, base], fill=BLANCO)
-    alto_l = round(bd * 0.42)
-    lg = marca_alto(f"{RAIZ}/logo/socios/enlata-wordmark.svg", alto_l)
-    ls = marca_alto(f"{RAIZ}/logo/socios/iavanza-lockup.svg", alto_l)
-    hueco = round(U * 0.060)
-    x0 = (w - (lg.width + hueco + ls.width)) // 2
-    yl = base - bd + (bd - alto_l) // 2
-    im.paste(lg, (x0, yl), lg)
-    im.paste(ls, (x0 + lg.width + hueco, yl), ls)
+    # La banda se dimensiona DESDE sus piezas, no al revés: con el rótulo a
+    # U*0.020 la suma daba 374 px dentro de una banda de 368 y el wordmark de
+    # IAvanza se cortaba por abajo. Se ve mirando, no en el informe.
+    cap_rot = round(bd * 0.055)
+    alto_l = round(bd * 0.36)
+    y_rot = base - bd + round(bd * 0.14)
+    med["marcas"] = banda_marcas(
+        im, d, sang + m, y_rot, w - (sang + m) * 2, U,
+        alto_logo=alto_l, cap_rot=cap_rot)
+    med["banda_sobra_abajo"] = base - med["marcas"]["fila1_base"]
     med["holgura"] = (base - bd - round(U * 0.040)) - y
 
     if con_marcas:

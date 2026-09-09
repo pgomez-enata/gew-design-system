@@ -25,8 +25,8 @@ from PIL import Image, ImageDraw
 
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, RAIZ)
-from campana import (TOK, activo, fuente, marca_alto, png_alto, pin,  # noqa: E402
-                     pulso, repartir, trocear)
+from campana import (TOK, PARTNERS, activo, fuente, marca_alto, marcas,  # noqa: E402
+                     png_alto, pin, pulso, repartir, trocear)
 
 W, H = 1920, 1080
 SEGURO = 0.10                 # margen de seguridad, los 4 lados
@@ -118,8 +118,26 @@ def portada(titulo, ponente="", cargo="", n=None):
     txt_pie = f"{TOK['campana']['fechas']} · {TOK['campana']['sitio']}"
     b_pie = d.textbbox((0, 0), txt_pie, font=f2)
     tope = H - round(W * SEGURO * 0.55) - (b_pie[3] - b_pie[1])
-    d.text((M, min(H - M + 14, tope - 4)), txt_pie, font=f2, fill=GRIS)
-    return im, {"tipo": "portada", "cap": cap, "lineas": len(ls)}
+    y_pie = min(H - M + 14, tope - 4)
+    d.text((M, y_pie), txt_pie, font=f2, fill=GRIS)
+    # Los dos Partners, a la derecha del mismo pie. Sin rótulo: en la portada
+    # no cabe y los logos hablan solos — el rótulo bilingüe va en el cierre,
+    # que es la lámina de créditos. No cambia el cálculo vertical del titular:
+    # se apoya en la línea que ya existía.
+    ALTO_LG = 34
+    # en blanco: el fondo de la portada es carbón y el wordmark de Enlata
+    # es negro — sin esto se pierde contra el fondo
+    piezas = [marca_alto(activo(r), ALTO_LG, blanco=True) for r in PARTNERS]
+    sep = 26
+    x = W - M
+    for pz in reversed(piezas):
+        x -= pz.width
+        im.paste(pz, (x, y_pie + (b_pie[3] - b_pie[1]) // 2 - pz.height // 2), pz)
+        x -= sep
+    libre = (x + sep) - (M + (b_pie[2] - b_pie[0]))
+    return im, {"tipo": "portada", "cap": cap, "lineas": len(ls),
+                "partners": {"n": len(piezas), "alto": ALTO_LG,
+                             "izquierda": x + sep, "libre": libre}}
 
 
 def seccion(titulo, n=None):
@@ -220,22 +238,47 @@ def cita(texto_, quien, cargo="", n=None):
 
 def cierre(mensaje="Gracias", contacto="", n=None):
     im, d = _base()
+
+    # Los dos Partners permanentes del movimiento, con su hueco de
+    # patrocinadores. Añadido el 6-sep-2026: el deck no llevaba ninguna marca
+    # de Enlata ni de IAvanza. Va anclada al pie —igual en todas las charlas—
+    # y el bloque de texto se centra en lo que queda, no en la mitad de la
+    # lámina: con un «gracias» de dos líneas el texto se le metía encima.
+    CAP_ROT, ALTO_LG = 15, 48
+    alto_banda = round(CAP_ROT * 2.28) + ALTO_LG
+    y_pulso = H - M + 24
+    y_banda = y_pulso - 30 - alto_banda
+
     lock = png_alto(activo("logo/gew-rd-lockup-blanco.png"), 150)
-    im.paste(lock, ((W - lock.width) // 2, H // 2 - 250), lock)
     f, ls, cap = _encaja(d, mensaje, "Bold", 96, W - M * 2, 2)
-    y = H // 2 + 20
+    f2 = fuente("Light", 32)
+    pies = [x for x in (contacto, TOK["campana"]["sitio"]) if x]
+
+    alto_txt = len(ls) * round(cap * 1.2) + (24 + 52 * len(pies) if pies else 0)
+    alto_todo = lock.height + 70 + alto_txt
+    zona = (M, y_banda - 30)
+    y0 = zona[0] + max(0, ((zona[1] - zona[0]) - alto_todo) // 2)
+
+    im.paste(lock, ((W - lock.width) // 2, y0), lock)
+    y = y0 + lock.height + 70
     for l in ls:
         b = d.textbbox((0, 0), l, font=f)
         d.text(((W - (b[2] - b[0])) // 2 - b[0], y - b[1]), l, font=f, fill=BLANCO)
         y += round(cap * 1.2)
-    f2 = fuente("Light", 32)
-    for t in [x for x in (contacto, TOK["campana"]["sitio"]) if x]:
+    for t in pies:
         b = d.textbbox((0, 0), t, font=f2)
         d.text(((W - (b[2] - b[0])) // 2 - b[0], y + 24 - b[1]), t, font=f2,
                fill=NARANJA if t == TOK["campana"]["sitio"] else GRIS)
         y += 52
-    pulso(d, M, H - M + 24, W - M * 2, 20)
-    return im, {"tipo": "cierre", "cap": cap}
+
+    med_m = marcas(im, d, M, y_banda, W - M * 2, H, oscuro=True,
+                   alto_logo=ALTO_LG, cap_rot=CAP_ROT)
+    pulso(d, M, y_pulso, W - M * 2, 20)
+    return im, {"tipo": "cierre", "cap": cap, "marcas": med_m,
+                "banda_top": y_banda, "banda_base": med_m["fila1_base"],
+                "libre_bajo_banda": y_pulso - med_m["fila1_base"],
+                "libre_sobre_banda": y_banda - y}
+
 
 
 GUION_DEMO = [

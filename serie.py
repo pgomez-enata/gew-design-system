@@ -281,6 +281,10 @@ def cuenta(clave, fmt="retrato", salida=None):
 
 
 # ───────────────────────────────────────────────────────────── agenda ──
+# El nombre lleva «agenda-» delante desde el 6-sep-2026: `semana--retrato.png`
+# existía también en `postevento/`, misma medida y contenido distinto. En su
+# carpeta no pasaba nada; al soltar los dos juntos en una entrega, uno pisaba
+# al otro y no se notaba.
 def agenda(titulo, items, fmt="retrato", salida=None, nombre="agenda"):
     """items = [{"hora","titulo","lugar"}]"""
     im, d, w, h, U, g, TOP, suelo, med = base(fmt)
@@ -410,9 +414,9 @@ def main():
                 hechas.append(cuenta(c, fmt, f"{a.salida}/cuenta")); esperadas += 1
         for fmt in ("retrato", "cuadrado"):
             t, it = DEMO_AGENDA_DIA
-            hechas.append(agenda(t, it, fmt, f"{a.salida}/agenda", "dia")); esperadas += 1
+            hechas.append(agenda(t, it, fmt, f"{a.salida}/agenda", "agenda-dia")); esperadas += 1
             t, it = DEMO_AGENDA_SEMANA
-            hechas.append(agenda(t, it, fmt, f"{a.salida}/agenda", "semana")); esperadas += 1
+            hechas.append(agenda(t, it, fmt, f"{a.salida}/agenda", "agenda-semana")); esperadas += 1
         print(f"producidas {len(hechas)} de {esperadas} esperadas")
         malas = [(r, m["holgura"]) for r, m in hechas if m.get("holgura", 0) < 0]
         for r, hh in malas:
@@ -427,7 +431,7 @@ def main():
     elif a.tipo == "agenda":
         t, it = DEMO_AGENDA_DIA if a.dia else DEMO_AGENDA_SEMANA
         hechas = [agenda(t, it, a.formato, f"{a.salida}/agenda",
-                         "dia" if a.dia else "semana")]
+                         "agenda-dia" if a.dia else "agenda-semana")]
     else:
         ap.error("hace falta --tipo o --todos")
     for r, _ in hechas:

@@ -23,6 +23,7 @@ from serie import FORMATOS as FMT_SER, R as R_SER  # noqa: E402
 from aliado import FORMATOS as FMT_ALI, R as R_ALI  # noqa: E402
 import impreso as IMP  # noqa: E402
 import metadatos as MET  # noqa: E402
+import pulso_musica as PM  # noqa: E402
 
 Image.MAX_IMAGE_PIXELS = None
 
@@ -525,6 +526,44 @@ def audita_movimiento(ruta):
     return out
 
 
+# ── el pulso en movimiento ─────────────────────────────────────────────
+def audita_pulso(ruta):
+    """Las tiras de contacto del pulso animado. No llevan formato de
+    plataforma —son hojas para elegir modo, como la lámina comparativa de
+    `movimiento`— pero sí llevan la carga que importa: el anillo entero.
+
+    Si un modo dejara alguna barra clavada en el suelo o el reescalado se
+    comiera un segmento, aquí faltaría un color y el elemento habría dejado de
+    ser el logo medido. Por eso la regla es sobre los 30 hex, no sobre el
+    lienzo. La exención de formato NO se hereda: el sellado se exige antes, en
+    `audita()`, y el ancho sí se comprueba."""
+    im = Image.open(ruta).convert("RGB")
+    a = np.array(im).reshape(-1, 3)
+    vistos = {"#%02X%02X%02X" % tuple(c) for c in np.unique(a, axis=0)}
+    anillo = {x["hex"].upper() for x in PM.SEGMENTOS}
+    faltan = anillo - vistos
+    modo = os.path.basename(ruta).split("--")[0]
+    # El ancho lo declara el motor, una clave por tipo de hoja. La comparativa
+    # es más ancha que las tiras de contacto y con un umbral fijo de 1080
+    # heredaba la regla de su hermana y fallaba sin motivo.
+    esp_an = PM.ANCHO_HOJA["comparativa" if modo == "comparativa" else "contacto"]
+    out = [("FALLA", "los 30 colores del anillo, presentes",
+            f"{len(anillo) - len(faltan)}/{len(anillo)}", f"{len(anillo)}",
+            not faltan),
+           ("FALLA", "ancho de la hoja", str(im.width), str(esp_an),
+            im.width == esp_an),
+           ("FALLA", "modo reconocido", modo,
+            " | ".join(PM.MODOS) + " | comparativa",
+            modo in PM.MODOS or modo == "comparativa")]
+    # y la composición de las piezas de ese modo: cero solapes entre bloques
+    for fmt in sorted(PM.FORMATOS):
+        mal = PM.solapes(fmt)
+        out.append(("FALLA", f"bloques sin solape · {fmt}",
+                    "; ".join(f"{x[0]}/{x[1]} {x[2]} px" for x in mal) or "0",
+                    "0", not mal))
+    return out
+
+
 # ── piezas de perfil ───────────────────────────────────────────────────
 def audita_perfil(ruta):
     """Las tres piezas que sí tienen ficha oficial publicada."""
@@ -577,6 +616,8 @@ def audita(ruta):
         return marca + audita_perfil(ruta)
     if os.sep + "movimiento" + os.sep in ruta:
         return marca + audita_movimiento(ruta)
+    if os.sep + "pulso" + os.sep in ruta:
+        return marca + audita_pulso(ruta)
     if os.sep + "ia-media" + os.sep in ruta:
         return marca + audita_ia_media(ruta)
     if os.sep + "senal" + os.sep in ruta:
