@@ -49,18 +49,27 @@ BINARIOS = [
      "brew install imagemagick"),
 ]
 
+# ⚠️ Antes esto decía «9 salen de ejemplo/» y metía en el mismo saco cosas muy
+# distintas: cuatro tipografías que hay que comprar, tres PNG que provee GEN y
+# dos logos que están en el repo público de IAvanza. A quien clona no le sirve
+# saber que faltan nueve: le sirve saber **cuáles tiene que conseguir**.
+# Cuarta columna: de dónde sale cada uno.
+#   viaja     está en el repo, no hay nada que hacer
+#   conseguir NO se puede sacar de ninguna parte — son los 7
+#   hermano   está en el repo público de IAvanza
+CONSEGUIR, HERMANO, VIAJA = "conseguir", "hermano", "viaja"
 ACTIVOS = [
-    ("tokens/tokens.json", True, "la fuente de verdad del sistema"),
-    ("fuentes/VAGRoundedStdThin.ttf", True, "el peso del logo"),
-    ("fuentes/VAGRoundedStdLight.ttf", True, "cuerpo de texto"),
-    ("fuentes/VAGRoundedStdBold.ttf", True, "titulares"),
-    ("fuentes/VAGRoundedStdBlack.ttf", True, "cifras grandes"),
-    ("logo/gew-rd-lockup-color.png", True, "el logo que manda: el dominicano"),
-    ("logo/gew-rd-lockup-blanco.png", True, "el mismo, para fondos oscuros"),
-    ("logo/gew-rd-anillo.png", True, "el anillo, cuando el lockup no se lee"),
-    ("logo/socios/enlata-wordmark.svg", True, "marca del anfitrión nacional"),
-    ("logo/socios/iavanza-lockup.svg", True, "marca del partner"),
-    ("datos/rd-provincias.geojson", False, "el mapa de las 32 provincias de la revista"),
+    ("tokens/tokens.json", True, "la fuente de verdad del sistema", VIAJA),
+    ("fuentes/VAGRoundedStdThin.ttf", True, "el peso del logo", CONSEGUIR),
+    ("fuentes/VAGRoundedStdLight.ttf", True, "cuerpo de texto", CONSEGUIR),
+    ("fuentes/VAGRoundedStdBold.ttf", True, "titulares", CONSEGUIR),
+    ("fuentes/VAGRoundedStdBlack.ttf", True, "cifras grandes", CONSEGUIR),
+    ("logo/gew-rd-lockup-color.png", True, "el logo que manda: el dominicano", CONSEGUIR),
+    ("logo/gew-rd-lockup-blanco.png", True, "el mismo, para fondos oscuros", CONSEGUIR),
+    ("logo/gew-rd-anillo.png", True, "el anillo, y de él salen los 39 segmentos del pulso", CONSEGUIR),
+    ("logo/socios/enlata-wordmark.svg", True, "marca de la Fundación Enlata", HERMANO),
+    ("logo/socios/iavanza-lockup.svg", True, "marca de IAvanza", HERMANO),
+    ("datos/rd-provincias.geojson", False, "el mapa de las 32 provincias de la revista", VIAJA),
 ]
 
 VERDE, ROJO, GRIS = "  OK  ", " FALTA", "  --  "
@@ -138,12 +147,15 @@ def revisar():
 
     from campana import activo, EJEMPLO      # noqa: E402
     de_ejemplo = 0
-    for rel, obl, para in ACTIVOS:
-        p = f"{RAIZ}/{rel}"
+    por_conseguir, del_hermano = [], []
+    for rel, obl, para, fuente in ACTIVOS:
         real = activo(rel)
         hay = os.path.exists(real)
         es_ej = hay and real.startswith(EJEMPLO)
         de_ejemplo += 1 if es_ej else 0
+        if es_ej:
+            (por_conseguir if fuente == CONSEGUIR else
+             del_hermano if fuente == HERMANO else []).append(rel)
         tam = f"{os.path.getsize(real)/1024:.0f} KB" if hay else "—"
         filas.append((rel, hay, obl,
                       tam + ("  ← ejemplo" if es_ej else ""), para))
@@ -154,6 +166,25 @@ def revisar():
                       f"{len(ACTIVOS) - de_ejemplo}/{len(ACTIVOS)}",
                       f"los otros {de_ejemplo} salen de ejemplo/ — el sistema "
                       f"corre, pero con marca de marcador"))
+    # Y de esos, cuáles hay que CONSEGUIR y cuáles están a un clon de distancia.
+    # Decir «faltan 9» no sirve: hay que decir cuáles no se pueden sacar de
+    # ninguna parte.
+    if por_conseguir:
+        # ⚠️ Informativa, NO un obligatorio que falta: el sistema arranca sin
+        # los siete, con marca de marcador. Marcarla como obligatoria hacía
+        # que el resumen dijera «1 obligatorios faltan» y el cierre «la
+        # máquina tiene todo lo obligatorio». Un mensaje que se contradice a
+        # sí mismo es peor que no darlo.
+        filas.append(("hay que conseguirlos", False, False,
+                      f"{len(por_conseguir)}",
+                      "las 4 VAG Rounded Std son licenciadas y los 3 PNG "
+                      "dominicanos los provee GEN · el sistema arranca sin "
+                      "ellos, con marca de marcador · ver ACTIVOS.md"))
+    if del_hermano:
+        filas.append(("del repo de IAvanza", False, False,
+                      f"{len(del_hermano)}",
+                      "github.com/pgomez-enata/iavanza-design-system — "
+                      "esos sí se pueden clonar"))
     return filas, faltan, cmds
 
 

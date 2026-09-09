@@ -58,13 +58,20 @@ def formato_de(nombre):
     return None
 
 
+# ⚠️ Los cuatro ramales de abajo tenían `return out + [...]` en la rama del
+# formato no reconocido, donde `out` **todavía no existe**. No era un fallo
+# cosmético: cualquier pieza con un sufijo que el patrón no entiende reventaba
+# la auditoría ENTERA con un UnboundLocalError, no la marcaba en rojo. Lo
+# destaparon `video/frame--horizontal--abajo.png` y su hermana vertical, que
+# `video.py --bloque abajo` produce y llevan doble sufijo. Corregido el
+# 9-sep-2026 en los cuatro a la vez: era el mismo bug copiado.
 def audita_actividad(ruta):
     """Reglas del flyer de actividad. El fondo puede ser foto, así que aquí no
     se puede exigir margen limpio: se comprueban lienzo, franja, badge y pie."""
     n = os.path.basename(ruta)
     fmt = next((f for f in FMT_ACT if n.endswith(f"--{f}.png")), None)
     if not fmt:
-        return out + [("FALLA", "formato reconocible", n,
+        return [("FALLA", "formato reconocible", n,
                        "sufijo --<formato>", False)]
     out = []
     esperado = FMT_ACT[fmt]["px"]
@@ -109,7 +116,7 @@ def audita_cita(ruta):
     n = os.path.basename(ruta)
     fmt = next((f for f in FMT_CITA if n.endswith(f"--{f}.png")), None)
     if not fmt:
-        return out + [("FALLA", "formato reconocible", n,
+        return [("FALLA", "formato reconocible", n,
                        "sufijo --<formato>", False)]
     out = []
     esperado = FMT_CITA[fmt]["px"]
@@ -139,11 +146,17 @@ def audita_cita(ruta):
 
 def audita_video(ruta):
     """Frames y rótulos llevan alfa; el endcard es opaco. El lockup tiene que
-    caer fuera de lo que tapa la interfaz."""
-    n = os.path.basename(ruta)
+    caer fuera de lo que tapa la interfaz.
+
+    ⚠️ `video.py --bloque abajo` produce `frame--<fmt>--abajo.png`, con doble
+    sufijo, y este ramal no lo reconocía: el motor generaba un nombre que su
+    propio auditor no entendía. Se le quita el `--abajo` antes de leer el
+    formato — la variante lleva la zona de subtítulos abajo, y eso no cambia
+    ninguna de las reglas que se comprueban aquí."""
+    n = os.path.basename(ruta).replace("--abajo.png", ".png")
     fmt = next((f for f in FMT_VID if n.endswith(f"--{f}.png")), None)
     if not fmt:
-        return out + [("FALLA", "formato reconocible", n,
+        return [("FALLA", "formato reconocible", n,
                        "sufijo --<formato>", False)]
     tipo = n.split("--")[0]
     out = []
@@ -161,12 +174,28 @@ def audita_video(ruta):
     fr = round(R_VID["franja"] * U)
     a = np.array(im.convert("RGBA"))
     if tipo in ("frame", "guias"):
-        # el lockup vive bajo la franja de interfaz superior
-        m = round(R_VID["margen"] * U)
-        caja = a[ui["arriba"] + m:ui["arriba"] + m + round(R_VID["logo"] * U),
-                 m:m + round(U * 0.30), 3]
-        out.append(("FALLA", "lockup fuera de la zona de interfaz",
+        # ⚠️ Esta regla buscaba el lockup en una CAJA FIJA arriba, que es donde
+        # vive con `--bloque arriba`. Piero abrió el 9-sep-2026 la variante
+        # `--bloque abajo` —«la franja se puede ubicar abajo si hay algún
+        # rostro que se tape»— y ahí no hay nada en esa caja: la regla marcaba
+        # en rojo una pieza correcta. El motor ganó una variante y su regla
+        # hermana se quedó atrás; es el mismo patrón que ya pasó dos veces.
+        # La caja la calcula `video.caja_lockup()`, la MISMA función que usa el
+        # motor al dibujar. Ampliarla a «la banda izquierda entera» no valía:
+        # con el lockup borrado quedaban 11 271 px del velo y de la franja, y
+        # la regla pasaba igual.
+        import video as VID
+        bloque = "abajo" if "--abajo" in os.path.basename(ruta) else "arriba"
+        C = VID.caja_lockup(fmt, bloque, True)
+        caja = a[C["y"]:C["y"] + C["alto"], C["x"]:C["x"] + C["ancho"], 3]
+        out.append(("FALLA", f"lockup en su caja ({bloque})",
                     f"{(caja > 10).sum()} px", "> 1500", (caja > 10).sum() > 1500))
+        # ⚠️ Aquí puse una medida de «dónde se ancla el lockup» que leía la
+        # banda izquierda entera, y esa banda lleva también la franja naranja
+        # del filo y el velo de subtítulos: daba y=335–1919 y marcaba en rojo
+        # las cuatro piezas. Una medida que no mide lo que dice su nombre es
+        # peor que no tenerla, así que se quitó. La regla de arriba sí mide lo
+        # que dice: que haya lockup dentro de la zona utilizable.
         # nada opaco por encima de la franja de interfaz
         arriba = a[:ui["arriba"] - 4, :, 3]
         out.append(("FALLA", "nada dibujado bajo la interfaz superior",
@@ -189,7 +218,7 @@ def _carbon_lockup_franja(ruta, FMT, R_, nombre_familia):
     n = os.path.basename(ruta)
     fmt = next((f for f in FMT if n.endswith(f"--{f}.png")), None)
     if not fmt:
-        return out + [("FALLA", "formato reconocible", n,
+        return [("FALLA", "formato reconocible", n,
                        "sufijo --<formato>", False)]
     out = []
     esperado = FMT[fmt]["px"]
@@ -646,7 +675,7 @@ def audita(ruta):
     fmt = formato_de(n)
     out = list(marca)
     if not fmt:
-        return out + [("FALLA", "formato reconocible", n,
+        return [("FALLA", "formato reconocible", n,
                        "sufijo --<formato>", False)]
 
     esperado = FORMATOS[fmt]["px"]

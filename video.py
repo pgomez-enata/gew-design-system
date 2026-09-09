@@ -75,8 +75,32 @@ def hoja(fmt):
     return w, h, u, {k: round(v * u) for k, v in R.items()}
 
 
+def caja_lockup(fmt, bloque="arriba", subtitulos=True, alto=None):
+    """Dónde va el par lockup+pulso. **Una sola fórmula**, la usan `frame()` y
+    el ramal de vídeo de `auditoria.py`.
+
+    ⚠️ Antes la auditoría tenía su propia copia: una caja fija arriba. Cuando
+    Piero abrió la variante `--bloque abajo` el 9-sep-2026, la regla marcó en
+    rojo una pieza correcta. Y al ampliarla a «la banda izquierda entera» pasó
+    lo contrario: con el lockup borrado quedaban 11 271 px del velo de
+    subtítulos y de la franja, y la regla pasaba igual. Dos copias de una
+    fórmula acaban separándose; aquí sólo hay una."""
+    w, h, U, g = hoja(fmt)
+    ui = FORMATOS[fmt]["ui"]
+    m, fr = g["margen"], g["franja"]
+    alto = alto or g["logo"]
+    hueco, a_p = round(U * 0.024), round(U * 0.028)
+    if bloque == "abajo":
+        suelo = h - fr - ui["abajo"] - (g["sub"] if subtitulos else 0)
+        y = suelo - m - a_p - hueco - alto
+    else:
+        y = ui["arriba"] + m
+    return {"y": y, "alto": alto, "x": m, "ancho": round(U * 0.30),
+            "hueco": hueco, "alto_pulso": a_p, "bloque": bloque}
+
+
 def frame(fmt="vertical", subtitulos=True, guias=False, salida=None,
-          pu=None, f=0):
+          pu=None, f=0, bloque="arriba"):
     """Overlay con alfa. Con guias=True marca lo que tapa la interfaz.
 
     Con `pu` —la pareja (energía, cabezas, rejilla) de `pulso_musica`— el pulso
@@ -93,13 +117,22 @@ def frame(fmt="vertical", subtitulos=True, guias=False, salida=None,
     # franja naranja al filo inferior
     d.rectangle([0, h - fr, w, h], fill=NARANJA)
 
-    # lockup GEW, dentro de la zona que la interfaz deja libre
+    # lockup GEW, dentro de la zona que la interfaz deja libre.
+    #
+    # `bloque` dice a qué borde se ancla el par lockup+pulso. Piero, 9-sep-2026:
+    # «la franja superior se puede ubicar abajo si hay algún rostro que se tape
+    # en el vídeo». Un 16:9 escalado para cubrir un 9:16 deja el recorte clavado
+    # al borde y la cara NO se puede bajar: lo que se mueve es la marca. Abajo
+    # se ancla justo ENCIMA de la zona de subtítulos y dentro de la zona segura
+    # —nunca en la reserva de la interfaz, que la app tapa.
     lock = png_alto(f"{RAIZ}/logo/gew-rd-lockup-blanco.png", g["logo"])
-    im.paste(lock, (m, ui["arriba"] + m), lock)
+    C = caja_lockup(fmt, bloque, subtitulos, lock.height)
+    hueco, a_p, y_lock = C["hueco"], C["alto_pulso"], C["y"]
+    im.paste(lock, (m, y_lock), lock)
     med["lockup"] = [lock.width, lock.height]
+    med["bloque"] = bloque
 
-    y_p = ui["arriba"] + m + lock.height + round(U * 0.024)
-    a_p = round(U * 0.028)
+    y_p = y_lock + lock.height + hueco
     if pu:
         E, H, R = pu
         PM.dibuja(d, m, y_p, w - m * 2, a_p, E, H, f % R["frames"])
@@ -237,7 +270,7 @@ def endcard(fmt="vertical", host=None, socios=None, salida=None,
     return im, med
 
 
-def anima(tipo, fmt, salida, dias=None):
+def anima(tipo, fmt, salida, dias=None, bloque="arriba"):
     """El overlay en movimiento, en bucle exacto de 4,8 s.
 
     El `frame` sale en **ProRes 4444 con alfa**: se pone encima del crudo en
@@ -255,7 +288,8 @@ def anima(tipo, fmt, salida, dias=None):
         ims = (endcard(fmt, pu=pu, f=i)[0].convert("RGB")
                for i in range(R["frames"]))
     else:
-        ims = (frame(fmt, pu=pu, f=i)[0] for i in range(R["frames"]))
+        ims = (frame(fmt, pu=pu, f=i, bloque=bloque)[0]
+               for i in range(R["frames"]))
     m = PM.monta_seq(ims, w, h, salida, R["fps"], alfa=alfa)
     if alfa:
         m.update(PM.alfa_real(salida))
@@ -278,16 +312,23 @@ def main():
     ap.add_argument("--nombre", default="Nombre Apellido")
     ap.add_argument("--cargo", default="Cargo · organización")
     ap.add_argument("--sin-subtitulos", action="store_true")
+    ap.add_argument("--bloque", choices=["arriba", "abajo"], default="arriba",
+                    help="a qué borde se ancla el lockup+pulso: `abajo` cuando "
+                         "la marca taparía un rostro del vídeo")
     ap.add_argument("--todos", action="store_true")
     ap.add_argument("--salida", default=f"{RAIZ}/_salida/video")
     a = ap.parse_args()
 
     def una(tipo, fmt):
-        r = f"{a.salida}/{tipo}--{fmt}.png"
+        # ⚠️ El sufijo NO es cosmético: sin él el variante escribiría sobre
+        # `frame--vertical.png` y cambiaría en silencio la marca de todo lo demás.
+        suf = (f"--{a.bloque}" if a.bloque != "arriba"
+               and tipo in ("frame", "guias") else "")
+        r = f"{a.salida}/{tipo}--{fmt}{suf}.png"
         if tipo == "frame":
-            _, mm = frame(fmt, not a.sin_subtitulos, False, r)
+            _, mm = frame(fmt, not a.sin_subtitulos, False, r, bloque=a.bloque)
         elif tipo == "guias":
-            _, mm = frame(fmt, not a.sin_subtitulos, True, r)
+            _, mm = frame(fmt, not a.sin_subtitulos, True, r, bloque=a.bloque)
         elif tipo == "lower":
             _, mm = lower(a.nombre, a.cargo, fmt, r)
         else:

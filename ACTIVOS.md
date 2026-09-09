@@ -16,6 +16,33 @@ con `python3 sellar_activos.py`, y sólo cuando el cambio fue a propósito.
 
 Medido el 2026-09-06 · sistema v1.2.0
 
+## Los 7 que hay que conseguir
+
+De todo lo que hay abajo, **estos siete son los que un clon no puede sacar de
+ninguna parte**. Los demás o están archivados y no se usan, o se generan con un
+comando, o salen del repo hermano de IAvanza. Los siete tienen marcador en
+`ejemplo/`, así que el sistema **arranca sin ellos** — pero lo que produce lleva
+marca de marcador, no la de GEW·RD.
+
+| Activo | Bytes | De dónde sale |
+|---|---|---|
+| `fuentes/VAGRoundedStdThin.ttf` | 32,824 | licenciada · el peso del logo |
+| `fuentes/VAGRoundedStdLight.ttf` | 32,448 | licenciada · cuerpo de texto |
+| `fuentes/VAGRoundedStdBold.ttf` | 34,596 | licenciada · titulares |
+| `fuentes/VAGRoundedStdBlack.ttf` | 33,972 | licenciada · cifras grandes |
+| `logo/gew-rd-lockup-color.png` | 159,257 | de GEN · el logo que manda, el dominicano |
+| `logo/gew-rd-lockup-blanco.png` | 145,302 | de GEN · el mismo, para fondos oscuros |
+| `logo/gew-rd-anillo.png` | 67,287 | de GEN · el anillo, y de él salen los 39 segmentos del pulso |
+
+**505,686 bytes en total.** Las cuatro tipografías son licenciadas: no se
+redistribuyen ni una vez, y por eso `ejemplo/fuentes/` lleva **Poppins** (OFL)
+con el nombre de fichero de las VAG, para que el motor la encuentre por el
+nombre que espera. Los tres PNG dominicanos los provee GEN; no hay vector.
+
+Los otros dos activos que `entorno.py` marca como obligatorios —
+`logo/socios/enlata-wordmark.svg` y `logo/socios/iavanza-lockup.svg`— **sí se
+pueden conseguir**: viven en el repo público de IAvanza.
+
 | Fichero | Bytes | sha256 (16) |
 |---|---:|---|
 | `fuentes/VAGRoundedStdBlack.ttf` | 33,972 | `e37c520e37530aba` |

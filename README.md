@@ -7,7 +7,7 @@ República Dominicana; IA Media firma la cobertura.
 **→ [Ver el sistema en funcionamiento](https://pgomez-enata.github.io/gew-design-system/)**
 · 20 secciones con las piezas que produce, la retícula, el pulso y las reglas.
 
-Sistema v1.2.0 · 87 ficheros · código MIT, marca no — ver [LICENCIAS.md](LICENCIAS.md)
+Sistema v1.2.0 · 88 ficheros · código MIT, marca no — ver [LICENCIAS.md](LICENCIAS.md)
 
 ## Qué hace
 
@@ -77,6 +77,35 @@ en `fuentes/` — así que sirve de prueba de que funciona.
 Está en `LEEME.md` y en el `Estado` de `index.html`. Lo principal: el perfil
 ICC de la imprenta, y cuál de las cuatro fuentes de cifras de GEN se cita —
 porque se contradicen entre sí.
+
+## Los 7 activos que este repo no versiona
+
+El repo trae **todo el código y todos los datos**, y arranca solo. Lo que no
+trae, a propósito, son **siete activos** que no se pueden redistribuir:
+
+| Activo | De dónde sale |
+|---|---|
+| `fuentes/VAGRoundedStd`**`Thin`**`.ttf` | licenciada · es el peso del logo |
+| `fuentes/VAGRoundedStd`**`Light`**`.ttf` | licenciada · cuerpo de texto |
+| `fuentes/VAGRoundedStd`**`Bold`**`.ttf` | licenciada · titulares |
+| `fuentes/VAGRoundedStd`**`Black`**`.ttf` | licenciada · cifras grandes |
+| `logo/gew-rd-lockup-color.png` | de GEN · el logo dominicano, el que manda |
+| `logo/gew-rd-lockup-blanco.png` | de GEN · el mismo, para fondos oscuros |
+| `logo/gew-rd-anillo.png` | de GEN · y de su anillo salen los 39 segmentos del pulso |
+
+**505,686 bytes en total.** Los cuatro pesos son de VAG Rounded Std, que es
+licenciada: no se redistribuye ni una vez. Por eso `ejemplo/fuentes/` lleva
+**Poppins** (SIL Open Font License) con el nombre de fichero de las VAG, para
+que el motor la encuentre por el nombre que espera. Los tres PNG dominicanos
+los provee Global Entrepreneurship Network; no hay versión vectorial.
+
+Dos activos más salen del **repo hermano**, así que esos sí puedes clonarlos:
+`logo/socios/enlata-wordmark.svg` y `logo/socios/iavanza-lockup.svg` viven en
+[iavanza-design-system](https://github.com/pgomez-enata/iavanza-design-system).
+Y los de **IA Media** no se reciben: los genera `logo_ia_media.py`.
+
+`python3 entorno.py` te lo dice en una tabla, con los hashes verificados contra
+[ACTIVOS.md](ACTIVOS.md).
 
 ## Para usarlo con tu marca
 
