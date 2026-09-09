@@ -319,16 +319,17 @@ def main():
     ap.add_argument("--salida", default=f"{RAIZ}/_salida/video")
     a = ap.parse_args()
 
-    def una(tipo, fmt):
-        # ⚠️ El sufijo NO es cosmético: sin él el variante escribiría sobre
+    def una(tipo, fmt, bloque=None):
+        bloque = bloque or a.bloque
+        # ⚠️ El sufijo NO es cosmético: sin él la variante escribiría sobre
         # `frame--vertical.png` y cambiaría en silencio la marca de todo lo demás.
-        suf = (f"--{a.bloque}" if a.bloque != "arriba"
+        suf = (f"--{bloque}" if bloque != "arriba"
                and tipo in ("frame", "guias") else "")
         r = f"{a.salida}/{tipo}--{fmt}{suf}.png"
         if tipo == "frame":
-            _, mm = frame(fmt, not a.sin_subtitulos, False, r, bloque=a.bloque)
+            _, mm = frame(fmt, not a.sin_subtitulos, False, r, bloque=bloque)
         elif tipo == "guias":
-            _, mm = frame(fmt, not a.sin_subtitulos, True, r, bloque=a.bloque)
+            _, mm = frame(fmt, not a.sin_subtitulos, True, r, bloque=bloque)
         elif tipo == "lower":
             _, mm = lower(a.nombre, a.cargo, fmt, r)
         else:
@@ -337,9 +338,19 @@ def main():
 
     if a.todos:
         tipos = ["frame", "guias", "lower", "endcard"]
-        esperadas = len(tipos) * len(FORMATOS)
-        hechas = [una(t, f) for t in tipos for f in FORMATOS]
-        print(f"producidas {len(hechas)} de {esperadas} esperadas")
+        trabajos = [(t, f, "arriba") for t in tipos for f in FORMATOS]
+        # ⭐ El `frame` sale TAMBIÉN con el lockup anclado abajo, en los cuatro
+        # formatos. La variante es de Piero (9-sep-2026): «la franja superior
+        # se puede ubicar abajo si hay algún rostro que se tape en el vídeo».
+        # Hasta ahora había que pedirla a mano y en `_salida` quedaban dos
+        # sueltas de una prueba: un lote que produce media familia es peor que
+        # uno que no la produce, porque parece completo.
+        trabajos += [("frame", f, "abajo") for f in FORMATOS]
+        esperadas = len(trabajos)
+        hechas = [una(t, f, b) for t, f, b in trabajos]
+        print(f"producidas {len(hechas)} de {esperadas} esperadas "
+              f"({len(tipos)} tipos × {len(FORMATOS)} formatos + "
+              f"{len(FORMATOS)} frame con el bloque abajo)")
         malas = [(r, mm["holgura"]) for r, mm in hechas if mm.get("holgura", 0) < 0]
         for r, hh in malas:
             print(f"  HOLGURA NEGATIVA {hh} px — {os.path.basename(r)}")
@@ -349,17 +360,25 @@ def main():
             print(f'\n{"overlay en movimiento":24} {"px":>10} {"frames":>7} '
                   f'{"pix_fmt":>14} {"fondo α":>8} {"se mueve":>9} {"modo":>10} {"MB":>6}')
             fallos, hechos_v = [], 0
-            esp_v = 2 * len(FORMATOS)
-            for tipo in ("frame", "endcard"):
-                ext = "mov" if tipo != "endcard" else "mp4"
-                for fmt in FORMATOS:
-                    ruta = f"{a.salida}-mov/{tipo}--{fmt}.{ext}"
-                    mm = anima(tipo, fmt, ruta)
+            # ⭐ El lote animado produce lo MISMO que el de PNG, incluida la
+            # variante con el bloque abajo (Piero, 9-sep-2026). Antes hacía 8
+            # overlays con el lockup siempre arriba mientras el lote de PNG
+            # sacaba 8 frames en dos variantes: el animado producía media
+            # familia y parecía completo.
+            trabajos_v = ([("frame", f, "arriba") for f in FORMATOS]
+                          + [("frame", f, "abajo") for f in FORMATOS]
+                          + [("endcard", f, "arriba") for f in FORMATOS])
+            esp_v = len(trabajos_v)
+            for tipo, fmt, bloque in trabajos_v:
+                    ext = "mov" if tipo != "endcard" else "mp4"
+                    suf = f"--{bloque}" if bloque != "arriba" else ""
+                    ruta = f"{a.salida}-mov/{tipo}--{fmt}{suf}.{ext}"
+                    mm = anima(tipo, fmt, ruta, bloque=bloque)
                     if "error" in mm:
-                        fallos.append(f'  FALLA {tipo}/{fmt}: {mm["error"]}')
+                        fallos.append(f'  FALLA {tipo}/{fmt}/{bloque}: {mm["error"]}')
                         continue
                     hechos_v += 1
-                    print(f'  {tipo+"/"+fmt:22} {mm["px"]:>10} {mm["frames"]:7} '
+                    print(f'  {tipo+"/"+fmt+suf:22} {mm["px"]:>10} {mm["frames"]:7} '
                           f'{mm["pix_fmt"]:>14} '
                           f'{str(mm.get("fondo_alfa", "—")):>8} '
                           f'{str(mm.get("mueve")):>9} '

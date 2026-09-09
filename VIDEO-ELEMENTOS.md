@@ -161,6 +161,21 @@ permanente; confedit tiene `marca_agua()`. Ninguno acepta **el nombre de la
 actividad** como texto.
 **Sobrevive**: un parámetro `--evento` en `marca_agua()` de confedit y una placa
 de actividad junto al lockup en `video.py:frame()`.
+
+## El bloque de marca se puede anclar abajo
+
+`video.py --tipo frame --bloque abajo` saca el mismo overlay con el par
+lockup+pulso anclado **encima de la zona de subtítulos** en vez de bajo la zona
+segura superior. En vertical el par lockup+pulso pasa de pintar en **y=335–468** a
+**y=1313–1446**, medido sobre el PNG con cualquier umbral de alfa; el velo
+de subtítulos y la franja naranja no se mueven.
+
+Sale a `frame--<formato>--abajo.png`: el fichero canónico **no se pisa**.
+
+Para qué: un 16:9 escalado para cubrir un 9:16 deja el recorte clavado al borde,
+así que una cara alta no se puede bajar. Piero, 9-sep-2026: «la franja superior
+se puede ubicar abajo si hay algún rostro que se tape en el vídeo». Quién decide
+es el motor de cobertura (`montaje.elegir_bloque`), una vez por pieza.
 ⚠️ La propuesta traía dos cifras malas: `0.018×U` citado como «el múltiplo del
 espaciado del pulso» cuando el real es `0.024`, y «acción segura = 95 % central»
 atribuido a EBU R95, que fija **93 %**. (Y no confundirlo con SMPTE RP 218, que
